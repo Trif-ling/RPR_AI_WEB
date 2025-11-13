@@ -1,0 +1,36 @@
+/* src/components/Statistics.css */
+.statistics-section {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 80px 10%; /* Větší padding */
+  text-align: center;
+}
+
+.statistics-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; /* Zarovnání na začátek, aby text pod čísly byl zarovnaný */
+  flex-wrap: wrap;
+  gap: 30px; /* Mezera mezi statistikami */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat-item {
+  flex: 1; /* Každá položka zabere stejné místo */
+  min-width: 200px; /* Minimální šířka pro zalamování */
+  text-align: center;
+}
+
+.stat-item h3 {
+  font-size: 3rem; /* Větší čísla */
+  color: #00d084;
+  margin-bottom: 10px;
+}
+
+.stat-item p {
+  font-size: 1.1rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}

@@ -1,0 +1,22 @@
+/* src/index.css */
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Důležité pro to, aby padding a border byly uvnitř elementu */
+  background-color: #1a1a1a; /* Zajistí, že i za obsahem bude tmavé pozadí */
+  font-family: 'Inter', sans-serif; /* Použijeme Inter, pokud ho naimportujeme, jinak Roboto nebo Arial */
+  color: white; /* Defaultní barva textu */
+  line-height: 1.6; /* Lepší čitelnost textu */
+}
+
+/* Reset pro všechny elementy, aby se odstranily defaultní marginy */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  /* React se vykresluje do #root, takže je dobré se ujistit, že zabírá 100% */
+  min-height: 100vh;
+}

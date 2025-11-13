@@ -1,0 +1,38 @@
+/* src/components/CallToAction.css */
+.cta-section {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 100px 10%; /* Větší padding */
+  text-align: center;
+}
+
+.cta-section h2 {
+  font-size: 3rem; /* Větší nadpis */
+  margin-bottom: 20px;
+}
+
+.cta-section p {
+  font-size: 1.2rem;
+  color: #aaa;
+  margin-bottom: 40px;
+  max-width: 800px; /* Omezíme šířku textu */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: #00d084;
+  color: #1a1a1a;
+  font-size: 1.2rem; /* Větší text na tlačítku */
+  font-weight: bold;
+  padding: 18px 50px; /* Větší tlačítko */
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Přidáme transform */
+}
+
+.cta-button:hover {
+  background-color: #00ffa1;
+  transform: translateY(-3px); /* Malý efekt při najetí */
+}

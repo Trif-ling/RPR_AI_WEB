@@ -1,0 +1,33 @@
+/* src/components/Footer.css */
+.footer {
+  background-color: #0a0a0a; /* Ještě tmavší než zbytek */
+  color: #777;
+  padding: 30px 10%;
+  text-align: center;
+  border-top: 1px solid #2b2b2b; /* Horní linka pro oddělení */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-content p {
+  margin: 5px 0;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: #777;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: white;
+}

@@ -1,0 +1,22 @@
+/* src/components/AboutUs.css */
+.about-us-section {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 80px 10%; /* Větší padding */
+  text-align: center;
+}
+
+.about-us-container {
+  display: grid; /* Použijeme Grid pro lepší rozvržení */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 3 sloupce na velké, méně na malé */
+  gap: 30px; /* Mezera mezi boxy */
+  max-width: 1200px; /* Omezíme celkovou šířku */
+  margin: 0 auto; /* Na střed */
+}
+
+.about-us-box {
+  background-color: #0c4b33;
+  padding: 30px; /* Větší padding uvnitř */
+  border-radius: 15px;
+  text-align: left;
+}
