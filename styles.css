@@ -1,0 +1,157 @@
+body {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: #557e71;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    background: #45695e;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+h1 {
+    text-align: center;
+    color: black;
+    margin-bottom: 20px;
+}
+
+
+/* Chat Window */
+.chat-window {
+    border: 1px solid #6a9c8c;
+    border-radius: 5px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-history {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #6a9c8c;
+}
+
+.message {
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.message.user {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    margin-left: auto;
+    text-align: right;
+}
+
+.message.assistant {
+    background-color: #eceff1;
+    align-self: flex-start;
+    margin-right: auto;
+}
+
+.message.assistant.thinking {
+    font-style: italic;
+    opacity: 0.6;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: #fff;
+}
+
+#userInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+#sendButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#sendButton:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+#sendButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* převádění formátování */
+/* --- Styly pro Markdown obsah uvnitř bublin --- */
+
+/* Odstraníme výchozí okraje odstavců, aby byl text kompaktní */
+.message p {
+    margin: 5px 0;
+}
+.message p:first-child {
+    margin-top: 0;
+}
+.message p:last-child {
+    margin-bottom: 0;
+}
+
+/* Styly pro seznamy */
+.message ul, .message ol {
+    margin: 5px 0;
+    padding-left: 20px; /* Odsazení odrážek */
+}
+
+/* Styl pro kód (v řádku) */
+.message code {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Styl pro bloky kódu (např. programování) */
+.message pre {
+    background-color: #2d2d2d;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-x: auto; /* Posuvník pro dlouhý kód */
+    margin: 10px 0;
+}
+
+.message pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+/* Odkazy v chatu */
+.message a {
+    color: #007bff;
+    text-decoration: underline;
+}
+.message.assistant a {
+    color: #0056b3; /* Tmavší modrá pro odkazy v bublině asistenta */
+}

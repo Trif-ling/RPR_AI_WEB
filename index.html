@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groq Llama Chatbot</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Llama Chatbot (Groq)</h1>
+
+        <div class="chat-window">
+            <div id="chatHistory" class="chat-history">
+                <div class="message assistant">Ahoj! Jsem Llama na Groqu. S čím ti pomohu?</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Napiš zprávu..." autofocus>
+                <button id="sendButton">Odeslat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatHistory = document.getElementById('chatHistory');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        
+        // *** ZMĚNA FORMATOVÁNÍ PRO GROQ ***
+        // Groq očekává: { role: "user" | "assistant" | "system", content: "text" }
+        const conversationContext = [
+            { role: "system", content: "Jsi užitečný asistent jménem Llama." },
+            { role: "assistant", content: "Ahoj! Jsem Llama na Groqu. S čím ti pomohu?" }
+        ];
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        sendButton.onclick = sendMessage;
+
+        function addMessage(role, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+
+            // Pokud je to zpráva od asistenta, chceme formátovat Markdown
+            if (role === 'assistant') {
+                // 1. Převod Markdown -> HTML
+                const rawHtml = marked.parse(text);
+                
+                // 2. Očištění HTML (bezpečnost proti XSS útokům)
+                const cleanHtml = DOMPurify.sanitize(rawHtml);
+                
+                // 3. Vložení jako HTML
+                messageDiv.innerHTML = cleanHtml;
+            } else {
+                // Uživatelovu zprávu necháme jako čistý text (pro bezpečnost a jednoduchost)
+                messageDiv.textContent = text;
+            }    
+
+        chatHistory.appendChild(messageDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // 1. Zobrazit uživatele
+            addMessage('user', text);
+            userInput.value = '';
+            sendButton.disabled = true;
+            
+            // 2. Přidat do historie (Groq formát)
+            conversationContext.push({ role: "user", content: text });
+            
+            // Placeholder "přemýšlí"
+            const thinkingMessage = document.createElement('div');
+            thinkingMessage.className = 'message assistant thinking';
+            thinkingMessage.textContent = 'Llama přemýšlí...';
+            chatHistory.appendChild(thinkingMessage);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        history: conversationContext 
+                    })
+                });
+
+                const data = await response.json();
+                chatHistory.removeChild(thinkingMessage);
+
+                if (response.ok && data.response) {
+                    addMessage('assistant', data.response);
+                    // 3. Přidat odpověď do historie
+                    conversationContext.push({ role: "assistant", content: data.response });
+                } else {
+                    addMessage('assistant', `Chyba: ${data.error}`);
+                }
+
+            } catch (error) {
+                chatHistory.removeChild(thinkingMessage);
+                addMessage('assistant', `Chyba připojení.`);
+            } finally {
+                sendButton.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
