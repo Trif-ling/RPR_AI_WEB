@@ -1,27 +1,31 @@
 /* src/components/Hero.css */
+
 .hero-container {
   display: flex;
-  justify-content: space-between; /* Rozprostřeme obsah */
+  justify-content: space-between;
   align-items: center;
-  padding: 80px 10%; /* Větší padding */
-  background-color: #1a1a1a;
-  color: white;
-  min-height: 60vh; /* Např. 60% výšky viewportu */
+  padding: 80px 10%;
+  
+  /* Musí být průhledné pro efekt bubliny */
+  background-color: transparent; 
+  color: var(--text-color); 
+  
+  min-height: 60vh;
 }
 
 .hero-text {
-  flex-basis: 55%; /* Více místa pro text */
-  text-align: left; /* Zarovnání textu vlevo */
+  flex-basis: 55%;
+  text-align: left;
 }
 
 .hero-text h2 {
-  font-size: 3rem; /* Větší nadpis */
+  font-size: 3rem;
   margin-bottom: 25px;
   line-height: 1.2;
 }
 
 .hero-text ul {
-  list-style: none; /* Odstranit defaultní odrážky */
+  list-style: none;
   padding-left: 0;
 }
 
@@ -30,12 +34,12 @@
   margin-bottom: 12px;
   opacity: 0.9;
   position: relative;
-  padding-left: 25px; /* Místo pro vlastní odrážku */
+  padding-left: 25px;
 }
 
 .hero-text li::before {
-  content: '•'; /* Vlastní odrážka */
-  color: #00d084; /* Barva odrážky */
+  content: '•';
+  color: var(--accent-color);
   font-size: 1.5rem;
   position: absolute;
   left: 0;
@@ -44,8 +48,8 @@
 
 .hero-model {
   flex-basis: 40%;
-  height: 350px; /* Větší výška */
-  background-color: #2b2b2b;
+  height: 350px;
+  background-color: #2b2b2b; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,21 +57,14 @@
   color: #777;
 }
 
-/* Responzivita pro Hero sekci */
 @media (max-width: 992px) {
   .hero-container {
-    flex-direction: column; /* Na menších obrazovkách pod sebou */
+    flex-direction: column;
     text-align: center;
     padding: 50px 5%;
   }
   .hero-text, .hero-model {
     flex-basis: 100%;
     margin-bottom: 30px;
-  }
-  .hero-text h2 {
-    font-size: 2.5rem;
-  }
-  .hero-text ul {
-    text-align: left; /* Odrážky zachováme vlevo */
   }
 }

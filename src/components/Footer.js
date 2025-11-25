@@ -2,15 +2,14 @@
 import React from 'react';
 import './Footer.css';
 
-function Footer() {
+function Footer({ text }) {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <p>&copy; 2025 {new Date().getFullYear()} Tým RpRProject. Všechna práva vyhrazena.</p>
+        <p>&copy; 2025 {new Date().getFullYear()} Tým RpRProject. {text.footer_rights}</p>
         <div className="footer-links">
-          {/* Sem můžete dát odkazy na sociální sítě, pokud máte */}
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Use</a>
+          <a href="#">{text.footer_privacy}</a>
+          <a href="#">{text.footer_terms}</a>
         </div>
       </div>
     </footer>

@@ -1,22 +1,35 @@
 /* src/components/AboutUs.css */
+
 .about-us-section {
-  background-color: #1a1a1a;
-  color: white;
-  padding: 80px 10%; /* Větší padding */
+  background-color: transparent;
+  color: var(--text-color);
+  padding: 80px 10%;
   text-align: center;
 }
 
+.about-us-section h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
 .about-us-container {
-  display: grid; /* Použijeme Grid pro lepší rozvržení */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 3 sloupce na velké, méně na malé */
-  gap: 30px; /* Mezera mezi boxy */
-  max-width: 1200px; /* Omezíme celkovou šířku */
-  margin: 0 auto; /* Na střed */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .about-us-box {
-  background-color: #0c4b33;
-  padding: 30px; /* Větší padding uvnitř */
+  background-color: var(--box-bg); 
+  color: var(--text-color);
+  
+  /* Plynulý přechod barvy boxů */
+  transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out;
+  
+  padding: 30px;
   border-radius: 15px;
   text-align: left;
 }

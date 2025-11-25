@@ -2,30 +2,30 @@
 import React from 'react';
 import './Statistics.css';
 
-function Statistics() {
+function Statistics({ text }) {
   return (
     <section className="statistics-section" id="statistics">
-      <h2>STATISTICS</h2>
+      <h2>{text.stats_title}</h2>
       <div className="statistics-container">
-
+        
         <div className="stat-item">
           <h3>157</h3>
-          <p>users</p>
+          <p>{text.stats_users}</p>
         </div>
-
+        
         <div className="stat-item">
           <h3>0.3s</h3>
-          <p>avg. time response</p>
+          <p>{text.stats_time}</p>
         </div>
-
+        
         <div className="stat-item">
           <h3>24/7</h3>
-          <p>online</p>
+          <p>{text.stats_online}</p>
         </div>
-
+        
         <div className="stat-item">
           <h3>89%</h3>
-          <p>satisfaction</p>
+          <p>{text.stats_satisfaction}</p>
         </div>
 
       </div>

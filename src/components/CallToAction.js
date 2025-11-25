@@ -2,13 +2,13 @@
 import React from 'react';
 import './CallToAction.css';
 
-function CallToAction() {
+function CallToAction({ text }) {
   return (
     <section className="cta-section">
-      <h2>Let's create something amazing.</h2>
-      <p>Our model is ready to turn your ideas into reality.</p>
+      <h2>{text.cta_title}</h2>
+      <p>{text.cta_text}</p>
       <a href="/chat" className="cta-button">
-        Start creating
+        {text.cta_btn}
       </a>
     </section>
   );

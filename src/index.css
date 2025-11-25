@@ -1,22 +1,96 @@
 /* src/index.css */
+
+/* === 1. SKRYTÍ SCROLLBARU (POSUVNÍKU) === */
+/* Pro Webkit (Chrome, Edge, Safari, Opera) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Pro Firefox a ostatní */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* === 2. DEFINICE BAREV === */
+:root {
+  --bg-color-dark: #000000;
+  --nav-bg-dark: #000000;
+  --text-color-dark: #ffffff;
+  --box-bg-dark: #0c4b33;
+
+  --bg-color-light: #ffffff;
+  --nav-bg-light: #ffffff;
+  --text-color-light: #000000;
+  --box-bg-light: #e0f2eb;
+  
+  --accent-color: #00d084;
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* Důležité pro to, aby padding a border byly uvnitř elementu */
-  background-color: #1a1a1a; /* Zajistí, že i za obsahem bude tmavé pozadí */
-  font-family: 'Inter', sans-serif; /* Použijeme Inter, pokud ho naimportujeme, jinak Roboto nebo Arial */
-  color: white; /* Defaultní barva textu */
-  line-height: 1.6; /* Lepší čitelnost textu */
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  background-color: var(--bg-color-dark);
 }
 
-/* Reset pro všechny elementy, aby se odstranily defaultní marginy */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+#root { height: 100%; }
+
+/* === 3. INVERZNÍ BUBLINA === */
+.inversion-bubble {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background-color: #ffffff; /* Vždy bílá */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  
+  /* Trik pro viditelnost textu (invertuje barvy) */
+  z-index: 99999; 
+  mix-blend-mode: difference; 
+  
+  /* Rychlost animace */
+  animation: expand 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
 }
 
-#root {
-  /* React se vykresluje do #root, takže je dobré se ujistit, že zabírá 100% */
+@keyframes expand {
+  0% { transform: translate(-50%, -50%) scale(0); }
+  100% { transform: translate(-50%, -50%) scale(300); }
+}
+
+/* === 4. HLAVNÍ KONTEJNER === */
+.App {
   min-height: 100vh;
+  padding-top: 80px; /* Odsazení kvůli fixed headeru */
+}
+
+/* Tmavý režim */
+.App#dark {
+  background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
+  --nav-bg: var(--nav-bg-dark);
+  --text-color: var(--text-color-dark);
+  --box-bg: var(--box-bg-dark);
+}
+
+/* Světlý režim */
+.App#light {
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+  --nav-bg: var(--nav-bg-light);
+  --text-color: var(--text-color-light);
+  --box-bg: var(--box-bg-light);
+}
+
+/* === 5. OCHRANA PRVKŮ PŘED INVERZÍ === */
+/* Prvky, které si mají zachovat svou barvu (např. zelená tlačítka), 
+   musí být nad bublinou. */
+.cta-button, 
+.theme-switch {
+  position: relative;
+  z-index: 100000; 
+  isolation: isolate;
 }
