@@ -6,7 +6,6 @@
   align-items: center;
   padding: 80px 10%;
   
-  /* Musí být průhledné pro efekt bubliny */
   background-color: transparent; 
   color: var(--text-color); 
   
@@ -37,24 +36,22 @@
   padding-left: 25px;
 }
 
+/* Odrážky (tečky) */
 .hero-text li::before {
   content: '•';
-  color: var(--accent-color);
+  color: currentColor; 
   font-size: 1.5rem;
   position: absolute;
   left: 0;
   top: -5px;
 }
 
+/* Místo pro 3D model - teď neviditelné, ale drží místo */
 .hero-model {
   flex-basis: 40%;
   height: 350px;
-  background-color: #2b2b2b; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 15px;
-  color: #777;
+  /* Barva pozadí a rámečky jsou pryč */
+  background-color: transparent; 
 }
 
 @media (max-width: 992px) {
@@ -66,5 +63,9 @@
   .hero-text, .hero-model {
     flex-basis: 100%;
     margin-bottom: 30px;
+  }
+  /* Na mobilu můžeme to prázdné místo zmenšit nebo skrýt úplně */
+  .hero-model {
+    height: 50px; /* Jen malá mezera */
   }
 }

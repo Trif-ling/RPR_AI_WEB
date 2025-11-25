@@ -12,9 +12,9 @@ function Hero({ text }) {
           <li>{text.hero_sub2}</li>
         </ul>
       </div>
-      <div className="hero-model">
-        <p>{text.hero_model_placeholder}</p>
-      </div>
+      
+      {/* Zde je prázdný kontejner pro budoucí 3D model */}
+      <div className="hero-model"></div>
     </div>
   );
 }

@@ -1,0 +1,169 @@
+/* src/components/ChatPage.css */
+
+/* Hlavní kontejner chatu - roztáhne se na zbytek stránky pod Navbarem */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 80px); /* 100% výšky minus výška Navbaru */
+  max-width: 900px; /* Aby to na PC nebylo moc široké */
+  margin: 0 auto;
+  position: relative;
+  background-color: transparent;
+}
+
+/* --- HLAVIČKA --- */
+.chat-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: rgba(0,0,0,0.05); /* Jemné podbarvení */
+}
+
+.bot-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #000;
+}
+
+.chat-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #00d084;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.chat-info {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* --- OBLAST ZPRÁV --- */
+.messages-area {
+  flex: 1; /* Zabere veškeré volné místo */
+  overflow-y: auto; /* Umožní scrollování */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Řádek zprávy */
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 75%; /* Bublina nezabere celou šířku */
+}
+
+.user-row {
+  align-self: flex-end; /* Uživatel vpravo */
+  flex-direction: row-reverse; /* Aby byl avatar (kdyby byl) vpravo */
+}
+
+.bot-row {
+  align-self: flex-start; /* Bot vlevo */
+}
+
+.msg-avatar {
+  width: 30px;
+  height: 30px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  flex-shrink: 0;
+}
+
+/* Bubliny */
+.message-bubble {
+  padding: 12px 18px;
+  border-radius: 20px;
+  font-size: 1rem;
+  line-height: 1.4;
+  position: relative;
+  word-wrap: break-word;
+}
+
+/* Bublina Bota (Šedá) */
+.bot-bubble {
+  background-color: var(--box-bg); /* Bere barvu z tématu */
+  color: var(--text-color);
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-bottom-left-radius: 5px; /* "Ocásek" vlevo dole */
+}
+
+/* Bublina Uživatele (Zelená/Barevná) */
+.user-bubble {
+  background-color: var(--accent-color); /* Zelená */
+  color: #000; /* Černý text na zelené je čitelný */
+  font-weight: 500;
+  border-bottom-right-radius: 5px; /* "Ocásek" vpravo dole */
+}
+
+/* --- VSTUPNÍ POLE (INPUT) --- */
+.input-area {
+  padding: 20px;
+  display: flex;
+  gap: 10px;
+  background-color: transparent;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 15px 20px;
+  border-radius: 30px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  background-color: var(--box-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-area input:focus {
+  border-color: var(--accent-color);
+}
+
+.send-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--accent-color);
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.send-btn:hover {
+  transform: scale(1.1);
+}
+
+.send-btn svg {
+  width: 20px;
+  height: 20px;
+  margin-left: -2px; /* Optické vyrovnání ikony */
+}
