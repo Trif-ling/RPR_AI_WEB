@@ -1,0 +1,31 @@
+/* src/components/CallToAction.css */
+.cta-section {
+  background-color: transparent;
+  color: var(--text-color);
+  padding: 100px 10%;
+  text-align: center;
+}
+
+.cta-section h2 { font-size: 3rem; margin-bottom: 20px; }
+
+.cta-section p {
+  font-size: 1.2rem; opacity: 0.8; margin-bottom: 40px;
+  max-width: 800px; margin-left: auto; margin-right: auto;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: #1a1a1a; 
+  font-size: 1.2rem; font-weight: bold;
+  padding: 18px 50px; border-radius: 50px;
+  text-decoration: none;
+  
+  /* Nad bublinou */
+  position: relative; z-index: 200000; isolation: isolate;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+  filter: brightness(1.1); transform: translateY(-3px);
+}

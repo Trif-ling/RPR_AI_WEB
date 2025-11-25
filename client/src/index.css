@@ -1,0 +1,76 @@
+/* src/index.css */
+
+/* 1. SKRYTÍ SCROLLBARU */
+::-webkit-scrollbar { display: none; }
+html { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* 2. DEFINICE BAREV */
+:root {
+  --bg-color-dark: #000000;
+  --nav-bg-dark: #000000;
+  --text-color-dark: #ffffff;
+  --box-bg-dark: rgba(12, 75, 51, 0.3); 
+
+  --bg-color-light: #ffffff;
+  --nav-bg-light: #ffffff;
+  --text-color-light: #000000;
+  --box-bg-light: rgba(0, 208, 132, 0.1); 
+  
+  --accent-color: #00d084;
+}
+
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  background-color: var(--bg-color-dark);
+}
+#root { height: 100%; }
+
+/* === 3. PŘECHODOVÁ BUBLINA (COVER WIPE) === */
+.inversion-bubble {
+  position: fixed; width: 30px; height: 30px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  
+  /* ZMĚNA: Bublina je teď ÚPLNĚ NAHOŘE a PŘEKRÝVÁ VŠE */
+  z-index: 999999; 
+  
+  /* Žádný mix-blend-mode = Žádná růžová! */
+  /* Barva se nastavuje dynamicky v JS (Bílá nebo Černá) */
+  
+  animation: expand 0.6s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+}
+
+@keyframes expand {
+  0% { transform: translate(-50%, -50%) scale(0); }
+  100% { transform: translate(-50%, -50%) scale(300); }
+}
+
+/* === 4. HLAVNÍ KONTEJNER === */
+.App { min-height: 100vh; padding-top: 80px; }
+
+.App#dark {
+  background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
+  --nav-bg: var(--nav-bg-dark);
+  --text-color: var(--text-color-dark);
+  --box-bg: var(--box-bg-dark);
+}
+
+.App#light {
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+  --nav-bg: var(--nav-bg-light);
+  --text-color: var(--text-color-light);
+  --box-bg: var(--box-bg-light);
+}
+
+/* === 5. VYČIŠTĚNÍ OCHRANY === */
+/* Už nepotřebujeme složité z-indexy, bublina překryje vše */
+.cta-button, .theme-switch, .about-us-box, .stat-item h3 {
+  position: relative; 
+  /* Stačí nižší z-index než bublina */
+  z-index: 1; 
+}
