@@ -3,7 +3,7 @@
 .about-us-section {
   background-color: transparent;
   color: var(--text-color);
-  padding: 80px 5%;
+  padding: 250px 5%;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -26,22 +26,23 @@
 
 /* Nadpis */
 .about-us-section h2 {
-  font-size: 2rem;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
   margin-bottom: 60px;
   text-transform: uppercase;
   letter-spacing: 2px;
   position: relative;
   z-index: 2;
   display: inline-block;
+  
+  /* NOVÉ: Přidána transition a kurzor */
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: default;
 }
 
-.about-us-section h2::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 3px;
-  background-color: #333;
-  margin: 15px auto 0;
+/* NOVÉ: Efekt při najetí na nadpis */
+.about-us-section h2:hover {
+  transform: translateY(-5px); /* Nadpis se nadzvedne */
+  color: var(--accent-color);  /* Volitelné: změní barvu na zelenou */
 }
 
 /* === ROZLOŽENÍ === */
@@ -76,7 +77,6 @@
   
   /* === ABSOLUTNÍ OCHRANA PŘED BUBLINOU === */
   position: relative;
-  z-index: 200000; /* Jsme vysoko nad bublinou */
   isolation: isolate;
   
   /* Animujeme jen barvu pozadí a textu, rámeček je stálý */

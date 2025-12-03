@@ -4,7 +4,7 @@ export const translations = {
   cz: {
     nav_about: "O nás",
     nav_stats: "Statistika",
-    nav_chat: "Chat s (jméno)",
+    nav_chat: "Chat s Junomi",
     
     hero_title: "Váš osobní asistent s umělou inteligencí.",
     hero_sub1: "Získejte okamžité odpovědi a kreativní nápady.",
@@ -18,7 +18,7 @@ export const translations = {
     about_box3: "Věříme, že skvělá technologie si zaslouží skvělý design. Každá animace a prvek jsou vytvořeny tak, aby byly intuitivní, responzivní a krásné.",
 
     stats_title: "STATISTIKA",
-    stats_users: "uživatelů",
+    stats_users: "uživatelů měsíčně",
     stats_time: "prům. doba odezvy",
     stats_online: "online",
     stats_satisfaction: "spokojenost",
@@ -29,13 +29,15 @@ export const translations = {
 
     footer_rights: "Všechna práva vyhrazena.",
     footer_privacy: "Zásady ochrany osobních údajů",
-    footer_terms: "Podmínky použití"
+    footer_terms: "Podmínky použití",
+    chat_welcome: "Ahoj! Jsem tvůj Junomi asistent. Jak ti dnes pomůžu?",
+    chat_placeholder: "Napište zprávu..."
   },
   
   en: {
     nav_about: "About us",
     nav_stats: "Statistics",
-    nav_chat: "Chat with (name)",
+    nav_chat: "Chat with Junomi",
     
     hero_title: "Your Personal AI Assistant.",
     hero_sub1: "Get Instant Answers and Creative Ideas.",
@@ -49,7 +51,7 @@ export const translations = {
     about_box3: "We believe great technology deserves great design. Every animation and element is crafted to be intuitive, responsive, and beautiful.",
 
     stats_title: "STATISTICS",
-    stats_users: "users",
+    stats_users: "users per month",
     stats_time: "avg. response time",
     stats_online: "online",
     stats_satisfaction: "satisfaction",
@@ -60,10 +62,12 @@ export const translations = {
 
     footer_rights: "All rights reserved.",
     footer_privacy: "Privacy Policy",
-    footer_terms: "Terms of Use"
+    footer_terms: "Terms of Use",
+    chat_welcome: "Hello! I am your Junomi AI assistant. How can I help you today?",
+    chat_placeholder: "Type a message..."
   },
 
-  de: {
+  /*de: {
     nav_about: "Über uns",
     nav_stats: "Statistik",
     nav_chat: "Chat mit (Name)",
@@ -79,7 +83,7 @@ export const translations = {
     about_box3: "Wir glauben, dass großartige Technologie großartiges Design verdient. Jede Animation ist so gestaltet, dass sie intuitiv und schön ist.",
 
     stats_title: "STATISTIK",
-    stats_users: "Benutzer",
+    stats_users: "Benutzer pro Monat",
     stats_time: "durchschn. Antwortzeit",
     stats_online: "online",
     stats_satisfaction: "Zufriedenheit",
@@ -91,5 +95,5 @@ export const translations = {
     footer_rights: "Alle Rechte vorbehalten.",
     footer_privacy: "Datenschutz",
     footer_terms: "Nutzungsbedingungen"
-  }
+  }*/
 };

@@ -9,7 +9,7 @@ function Statistics({ text }) {
       <div className="statistics-container">
         
         <div className="stat-item">
-          <h3>157</h3>
+          <h3>~12</h3>
           <p>{text.stats_users}</p>
         </div>
         

@@ -1,30 +1,52 @@
-// src/components/Navbar.js
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 
-function Navbar({ isToggled, toggleTheme, language, setLanguage, text }) {
+// Importy log
+import logoWhite from '../logo-tmave.svg'; 
+import logoDark from '../logo-svetle.svg';
+
+function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentThemeState }) {
+
+  const handleToggle = (e) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    toggleTheme(x, y);
+  };
+
   return (
     <nav className="navbar">
-      {/* Kliknutí na LOGO vrátí na domovskou stránku */}
-      <Link to="/" className="navbar-logo">LOGO</Link>
+      <Link to="/" className="navbar-logo">
+        {/* Kontejner pro loga - velikost se nyní řídí čistě v CSS */}
+        <div className="logo-container">
+          
+          {/* Logo pro DARK MODE (bílý text) */}
+          <img 
+            src={logoWhite} 
+            alt="Junomi" 
+            className={`logo-img ${currentThemeState === 'dark' ? 'visible' : 'hidden'}`} 
+          />
+          
+          {/* Logo pro LIGHT MODE (černý text) */}
+          <img 
+            src={logoDark} 
+            alt="Junomi" 
+            className={`logo-img ${currentThemeState === 'light' ? 'visible' : 'hidden'}`} 
+          />
+        </div>
+      </Link>
       
       <ul className="navbar-links">
-        <li><a href="/#about">{text.nav_about}</a></li>
-        <li><a href="/#statistics">{text.nav_stats}</a></li>
-        
-        {/* Odkaz na Chat pomocí Link */}
-        <li><Link to="/chat">{text.nav_chat}</Link></li>
+        <li><a href="/#about">{text?.nav_about || "About"}</a></li>
+        <li><a href="/#statistics">{text?.nav_stats || "Stats"}</a></li>
+        <li><Link to="/chat">{text?.nav_chat || "Chat"}</Link></li>
       </ul>
 
       <div className="navbar-controls">
-        
-        <label className="theme-switch">
-          <input 
-            type="checkbox" 
-            onChange={toggleTheme} 
-            checked={isToggled} 
-          />
+        <label className="theme-switch" onClick={handleToggle}>
+          <input type="checkbox" checked={isToggled} readOnly />
           <span className="switch-track">
             <span className="switch-knob">
               {isToggled ? (
@@ -44,7 +66,6 @@ function Navbar({ isToggled, toggleTheme, language, setLanguage, text }) {
           >
             <option value="cz">CZ</option>
             <option value="en">EN</option>
-            <option value="de">DE</option>
           </select>
           <span className="arrow-down">▼</span>
         </div>
