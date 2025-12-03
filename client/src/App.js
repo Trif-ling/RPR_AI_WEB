@@ -9,11 +9,11 @@ import Statistics from './components/Statistics';
 import CallToAction from './components/CallToAction';
 import Footer from './components/Footer';
 import ChatPage from './components/ChatPage';
+import RobotScene from './components/Robot'; 
 import { translations } from './translations';
 import './index.css';
 
 function App() {
-  // 1. INICIALIZACE STAVŮ
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme || 'dark'; 
@@ -24,7 +24,7 @@ function App() {
     return savedTheme === 'light'; 
   });
 
-  // Stav pro Z-Index (aby bublina nepřekážela, když není aktivní)
+  // Bublina má buď -1 (schovaná) nebo 9999 (překrývá vše, včetně robota s z-index 50)
   const [bubbleZIndex, setBubbleZIndex] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme === 'light' ? -1 : 9999;
@@ -35,10 +35,8 @@ function App() {
 
   const t = translations[language];
 
-  // 3. EFEKT: APLIKACE TŘÍD
   useEffect(() => {
     localStorage.setItem('theme', theme);
-
     if (theme === 'dark') {
       document.body.classList.add('dark-mode');
       document.body.classList.remove('light-mode');
@@ -50,32 +48,18 @@ function App() {
     }
   }, [theme]);
 
-  // 4. FUNKCE PRO ZMĚNU TÉMATU (S logikou Z-Indexu)
   const handleThemeChange = (x, y) => {
     setBubblePos({ x, y });
     
     if (theme === 'dark') {
-      // Jdeme do LIGHT
-      setBubbleZIndex(9999); // Bublina nahoru
-      setIsToggled(true);    // Expandovat
-
-      setTimeout(() => {
-        setTheme('light');
-      }, 250);
-
-      // Po animaci bublinu schováme dospod
-      setTimeout(() => {
-        setBubbleZIndex(-1);
-      }, 700);
-
+      setBubbleZIndex(9999); // Aktivujeme bublinu (překryje robota)
+      setIsToggled(true);    
+      setTimeout(() => setTheme('light'), 250);
+      setTimeout(() => setBubbleZIndex(-1), 700);
     } else {
-      // Jdeme do DARK
-      setBubbleZIndex(9999); // Bublina nahoru
-      setTheme('dark');      // Přepnout téma (pozadí zčerná pod bublinou)
-      
-      setTimeout(() => {
-        setIsToggled(false); // Smrsknout bublinu
-      }, 10);
+      setBubbleZIndex(9999); // Aktivujeme bublinu (překryje robota)
+      setTheme('dark');      
+      setTimeout(() => setIsToggled(false), 10);
     }
   };
 
@@ -83,7 +67,10 @@ function App() {
     <Router>
       <div className="App" id={theme}>
         
-        {/* BUBLINA - Přidán style pro zIndex */}
+        {/* Robot se vykreslí do našeho kontejneru s z-index: 50 */}
+        <RobotScene />
+
+        {/* Bublina má z-index: 9999 (když je aktivní), takže robota zakryje */}
         <div 
           className={`inversion-bubble ${isToggled ? 'expanded' : ''}`}
           style={{ 
@@ -93,7 +80,6 @@ function App() {
           }}
         />
 
-        {/* HLAVNÍ OBSAH */}
         <div className="content-wrapper">
           <Navbar 
             isToggled={isToggled} 

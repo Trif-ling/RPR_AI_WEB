@@ -1,72 +1,105 @@
-import React, { useRef, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Environment, OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
+import React, { useRef, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useLocation } from "react-router-dom";
+import { Canvas } from "@react-three/fiber"; 
+// DŮLEŽITÉ: Odstraněn import 'useFrame', už ho nepoužíváme.
+import { useGLTF, Stage } from "@react-three/drei";
 
 function SamuraiModel() {
-  // 1. Načtení modelu
-  // 'nodes' obsahuje všechny části modelu (Head, Body, Arm...)
   const { scene, nodes } = useGLTF("/junomi_samurai.glb");
-  
-  // Reference pro přímý přístup k částem robota
   const headRef = useRef();
-  const armRef = useRef();
 
-  // 2. Najdeme konkrétní části modelu a přiřadíme je do refs
-  // Toto se spustí jen jednou po načtení
   useEffect(() => {
-    // Vypíše do konzole názvy všech částí - zkontroluj si je v prohlížeči (F12)!
-    console.log("Dostupné nody:", nodes);
-
-    // ZDE UPRAV NÁZVY "Head" a "ArmRight" PODLE BLENDERU
-    if (nodes.Head) headRef.current = nodes.Head;
-    if (nodes.ArmRight) armRef.current = nodes.ArmRight;
+    // Toto se spustí jen jednou při načtení - nastaví polohu hlavy
+    if (nodes.Head) {
+      headRef.current = nodes.Head;
+      headRef.current.rotation.x = 1.8;
+      headRef.current.rotation.y = 0.5;
+      headRef.current.rotation.z = 4.5;
+    }
   }, [nodes]);
 
-  // 3. Animace (běží každý frame)
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime(); // Čas pro sinusoidu
-    
-    // A) Mávání rukou
-    if (armRef.current) {
-      // Sinusoida: (rychlost * t) * rozsah + offset
-      // Změň 'z' na 'x' nebo 'y' podle toho, jak máš otočené osy v Blenderu
-      armRef.current.rotation.z = Math.sin(t * 5) * 0.5 + 0.5; 
-    }
+  // ZDE BYLA ANIMACE (useFrame). JE SMAZANÁ.
+  // Robot se ani nehne.
 
-    // B) Otáčení hlavy za myší
-    if (headRef.current) {
-      // state.pointer.x je hodnota od -1 do 1 (poloha myši)
-      const targetX = state.pointer.x * 0.5; // 0.5 omezuje úhel otáčení
-      const targetY = state.pointer.y * 0.5;
-
-      // Lerp = Linear Interpolation (pro plynulý dojezd hlavy)
-      headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, targetX, 0.1);
-      headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, -targetY, 0.1);
-    }
-  });
-
-  return <primitive object={scene} scale={2} position={[0, -2, 0]} />;
+  return <primitive object={scene} rotation={[0, -1.5, 0]} />;
 }
 
-// Hlavní komponenta, kterou vložíš do stránky
 export default function RobotScene() {
-  return (
-    <div style={{ width: "100vw", height: "100vh", background: "#333" }}>
-      <Canvas camera={{ position: [0, 1, 5], fov: 50 }}>
-        {/* Světla */}
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 5, 5]} intensity={1} />
+  const location = useLocation();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || location.pathname !== '/') {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 50,
         
-        {/* Model */}
-        <SamuraiModel />
+        // KLÍČOVÉ PRO SCROLLOVÁNÍ:
+        // "none" zajistí, že tento overlay pro myš neexistuje.
+        pointerEvents: "none", 
         
-        {/* Ovládání myší (nepovinné, pro debugování) */}
-        {/* <OrbitControls /> */}
-      </Canvas>
-    </div>
+        // Zákaz jakýchkoliv CSS animací kontejneru
+        transition: "none",
+        transform: "none",
+        
+        // Flexbox pro stabilní umístění
+        display: "flex",
+        alignItems: "flex-end", // Zarovnat dolů
+        justifyContent: "flex-end", // Zarovnat doprava
+      }}
+    >
+      <div
+        style={{
+          // Tady nastavujeme odsazení od okrajů
+          marginBottom: "200px", // Jak vysoko má být
+          marginRight: "60px",   // Jak moc vlevo má být
+          
+          width: "450px",
+          height: "550px",
+          transition: "none",
+          pointerEvents: "none"
+        }}
+      >
+        <Canvas
+          // === PERFORMANCE BOOST ===
+          // "demand" = Vykresli 1 snímek a zastav se. 
+          // Žádných 60 FPS, nulová zátěž na baterii a CPU.
+          frameloop="demand"
+          
+          shadows={false}
+          camera={{ fov: 40 }}
+          gl={{ alpha: true, antialias: true }}
+          style={{ 
+            background: "transparent", 
+            pointerEvents: "none" // Pojistka i pro Canvas
+          }}
+        >
+          <Stage
+            environment="city"
+            intensity={0.5}
+            shadows={false}
+            adjustCamera={1.2}
+          >
+            <SamuraiModel />
+          </Stage>
+        </Canvas>
+      </div>
+    </div>,
+    document.body
   );
 }
 
-// Preload modelu, aby neproblikl při načítání
 useGLTF.preload("/junomi_samurai.glb");

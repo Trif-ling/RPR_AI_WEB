@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- <link rel="icon" href="%PUBLIC_URL%/favicon.ico" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Junomi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,30 +10,42 @@
 
     <script>
       (function() {
-        // 1. Zjistíme uložené téma
-        var savedTheme = localStorage.getItem('theme');
-        var theme = 'dark'; // Výchozí
-
-        if (savedTheme) {
-          theme = savedTheme;
-        }
-
-        // 2. Okamžitě nastavíme třídu a barvu pozadí na HTML element
-        // Poznámka: Nepřistupujeme zde k document.body, protože v head ještě neexistuje
-        if (theme === 'dark') {
+        var savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'dark') {
           document.documentElement.classList.add('dark-mode');
-          document.documentElement.style.backgroundColor = '#000000'; // Hard set
+          document.documentElement.style.backgroundColor = '#000000';
         } else {
           document.documentElement.classList.add('light-mode');
-          document.documentElement.style.backgroundColor = '#ffffff'; // Hard set
+          document.documentElement.style.backgroundColor = '#ffffff';
         }
       })();
     </script>
+    
+    <style>
+      body, html {
+        transform: none !important;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     
     <div id="root"></div>
+    
+    <!-- KONTEJNER PRO ROBOTA -->
+    <!-- ZMĚNA: z-index nastaven na 50 (aby byl pod bublinou) -->
+    <div id="robot-overlay-container" style="
+      position: fixed; 
+      bottom: 0; 
+      right: 0; 
+      width: 450px; 
+      height: 550px; 
+      z-index: 50; 
+      pointer-events: none;
+      transform: translate3d(0,0,0);
+    "></div>
     
   </body>
 </html>
