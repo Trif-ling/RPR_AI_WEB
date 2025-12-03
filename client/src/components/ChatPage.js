@@ -4,7 +4,7 @@ import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import './ChatPage.css';
 
-const BACKEND_URL = "https://junomi.app/junomi-server";
+const BACKEND_URL = "https://monkfish-app-grkr8.ondigitalocean.app/rpr-ai-web-server";
 
 function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
   
