@@ -1,0 +1,204 @@
+/* src/components/ChatPage.css */
+
+/* Hlavní kontejner chatu */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  
+  /* ZMĚNA: Výška na celou obrazovku viewportu */
+  height: 100vh; 
+  
+  /* ZMĚNA: Přidán padding-top, aby obsah nezačínal pod Navbarem (80px + 20px mezera) */
+  padding-top: 100px;
+  
+  /* ZMĚNA: Důležité, aby se padding započítal do výšky 100vh a stránka neujela */
+  box-sizing: border-box;
+
+  max-width: 900px; 
+  margin: 0 auto;
+  position: relative;
+  background-color: transparent;
+}
+
+/* --- HLAVIČKA CHATU (Volitelné, pokud ji tam máš, jinak můžeš skrýt) --- */
+.chat-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(139, 139, 139, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: transparent; 
+  /* Aby hlavička neujela při scrollování zpráv, můžeš ji nechat součástí flex flow */
+  flex-shrink: 0; 
+}
+
+.bot-avatar {
+  width: 40px; height: 40px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; color: #000;
+}
+
+.chat-info h3 {
+  margin: 0; font-size: 1.1rem; color: var(--text-color);
+}
+
+.status-dot {
+  display: inline-block; width: 8px; height: 8px;
+  background-color: #00d084; border-radius: 50%; margin-right: 5px;
+}
+
+.chat-info {
+  color: var(--text-color); font-size: 0.9rem; opacity: 0.8;
+}
+
+/* --- OBLAST ZPRÁV --- */
+.messages-area {
+  flex: 1; /* Zabere veškeré volné místo mezi hlavičkou a inputem */
+  overflow-y: auto; /* Scrollování pouze v této oblasti */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  
+  /* Jemný scrollbar pro tuto oblast */
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) transparent;
+}
+
+/* Řádek zprávy */
+.message-row {
+  display: flex; align-items: flex-end; gap: 10px;
+  max-width: 80%; /* Zvětšeno na 80% pro lepší využití místa */
+}
+
+.user-row {
+  align-self: flex-end; flex-direction: row-reverse;
+}
+
+.bot-row {
+  align-self: flex-start;
+}
+
+.msg-avatar {
+  width: 30px; height: 30px;
+  background-color: var(--accent-color);
+  border-radius: 50%; font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  color: #000; flex-shrink: 0;
+}
+
+/* Bubliny */
+.message-bubble {
+  padding: 12px 18px;
+  border-radius: 20px;
+  font-size: 1rem;
+  line-height: 1.5;
+  position: relative;
+  word-wrap: break-word;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Bublina Bota */
+.bot-bubble {
+  background-color: var(--box-bg); 
+  color: var(--text-color);
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-bottom-left-radius: 5px; 
+}
+
+/* Bublina Uživatele */
+.user-bubble {
+  background-color: var(--accent-color); 
+  color: #000; 
+  font-weight: 500;
+  border-bottom-right-radius: 5px; 
+}
+
+/* Ztenčení písma uživatele pouze ve světlém režimu (tvůj předchozí požadavek) */
+body.light-mode .user-bubble {
+  font-weight: 400;
+}
+
+/* --- VSTUPNÍ POLE (INPUT) --- */
+.input-area {
+  padding: 20px;
+  display: flex;
+  gap: 10px;
+  background-color: transparent;
+  flex-shrink: 0; /* Input se nesmí zmenšovat */
+}
+
+.input-area input {
+  flex: 1;
+  padding: 15px 20px;
+  border-radius: 30px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  background-color: var(--box-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-area input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(0, 208, 132, 0.2);
+}
+
+.send-btn {
+  width: 50px; height: 50px;
+  border-radius: 50%; border: none;
+  background-color: var(--accent-color);
+  color: #000; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.send-btn:hover {
+  transform: scale(1.1);
+}
+
+/* --- RESPONZIVITA NA MOBILU --- */
+@media (max-width: 768px) {
+  .chat-container {
+    /* Na mobilu trochu zmenšíme horní odsazení, pokud je navbar menší, 
+       ale 90px je jistota proti klipování */
+    padding-top: 100px; 
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .message-row {
+    max-width: 90%; /* Na mobilu bubliny širší */
+  }
+
+  .input-area {
+    padding: 15px 10px; /* Menší padding kolem inputu */
+  }
+  
+  .input-area input {
+    font-size: 16px; /* Prevence zoomování na iOS */
+  }
+}
+
+/* --- Markdown Styly --- */
+.bot-bubble p { margin: 5px 0; }
+.bot-bubble p:first-child { margin-top: 0; }
+.bot-bubble p:last-child { margin-bottom: 0; }
+.bot-bubble ul, .bot-bubble ol { margin: 5px 0; padding-left: 20px; }
+.bot-bubble li { margin-bottom: 2px; }
+.bot-bubble strong { font-weight: bold; color: inherit; }
+.bot-bubble code {
+  background-color: rgba(0,0,0,0.1);
+  padding: 2px 4px; border-radius: 4px;
+  font-family: monospace; font-size: 0.9em;
+}
+.bot-bubble pre {
+  background-color: #2d2d2d; color: #fff;
+  padding: 10px; border-radius: 5px;
+  overflow-x: auto; margin: 10px 0;
+}
+.bot-bubble pre code { background-color: transparent; color: inherit; padding: 0; }
