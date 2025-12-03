@@ -24,14 +24,13 @@ function App() {
     return savedTheme === 'light'; 
   });
 
+  // Stav pro Z-Index (aby bublina nepřekážela, když není aktivní)
   const [bubbleZIndex, setBubbleZIndex] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme === 'light' ? -1 : 9999;
   });
 
   const [language, setLanguage] = useState('cz');
-  
-  // 2. STAV PRO POZICI BUBLINY
   const [bubblePos, setBubblePos] = useState({ x: 0, y: 0 });
 
   const t = translations[language];
@@ -51,34 +50,46 @@ function App() {
     }
   }, [theme]);
 
-  // 4. FUNKCE PRO ZMĚNU TÉMATU
+  // 4. FUNKCE PRO ZMĚNU TÉMATU (S logikou Z-Indexu)
   const handleThemeChange = (x, y) => {
-  // 1. Nastavíme startovní pozici bubliny
-  setBubblePos({ x, y });
-  
-  // 2. Okamžitě spustíme vizuální expanzi bubliny
-  // Pokud jsme v Dark, jdeme na Light (expandujeme bílou bublinu)
-  const nextIsLight = theme === 'dark'; 
-  setIsToggled(nextIsLight);
+    setBubblePos({ x, y });
+    
+    if (theme === 'dark') {
+      // Jdeme do LIGHT
+      setBubbleZIndex(9999); // Bublina nahoru
+      setIsToggled(true);    // Expandovat
 
-  // 3. Zpozdíme přepnutí dat (tématu, loga, barev)
-  // o 250ms, aby bublina stihla vizuálně překrýt obrazovku.
-  setTimeout(() => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-  }, 250); 
-};
+      setTimeout(() => {
+        setTheme('light');
+      }, 250);
+
+      // Po animaci bublinu schováme dospod
+      setTimeout(() => {
+        setBubbleZIndex(-1);
+      }, 700);
+
+    } else {
+      // Jdeme do DARK
+      setBubbleZIndex(9999); // Bublina nahoru
+      setTheme('dark');      // Přepnout téma (pozadí zčerná pod bublinou)
+      
+      setTimeout(() => {
+        setIsToggled(false); // Smrsknout bublinu
+      }, 10);
+    }
+  };
 
   return (
     <Router>
       <div className="App" id={theme}>
         
-        {/* BUBLINA */}
+        {/* BUBLINA - Přidán style pro zIndex */}
         <div 
           className={`inversion-bubble ${isToggled ? 'expanded' : ''}`}
           style={{ 
             left: bubblePos.x, 
-            top: bubblePos.y 
+            top: bubblePos.y,
+            zIndex: bubbleZIndex 
           }}
         />
 

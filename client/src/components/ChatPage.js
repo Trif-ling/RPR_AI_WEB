@@ -4,7 +4,7 @@ import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import './ChatPage.css';
 
-const BACKEND_URL = "http://localhost:3001";
+const BACKEND_URL = "https://junomi.app/junomi-server";
 
 function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
   
@@ -74,12 +74,12 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
     setInputValue("");
     setIsTyping(true);
 
-    // 1. Přidat zprávu uživatele do UI
+    // 1. Přidat zprávu uživatele
     const newUserMsg = { id: Date.now(), sender: 'user', text: userText };
     const historyToSend = [...messages, newUserMsg]; 
     setMessages(historyToSend);
 
-    // 2. Vytvořit prázdnou bublinu pro bota
+    // 2. Přidat prázdnou bublinu pro bota
     const botMsgId = Date.now() + 1;
     const initialBotMsg = { id: botMsgId, sender: 'bot', text: "" };
     setMessages(prev => [...prev, initialBotMsg]);
@@ -96,28 +96,33 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
         })
       });
 
-      // === ZDE JE TA HLAVNÍ ZMĚNA PRO OŠETŘENÍ CHYB (RATE LIMIT) ===
+      // === OPRAVA CHYBY "Body has already been consumed" ===
       if (!response.ok) {
-        let errorMessage = `Chyba ${response.status}`;
+        let errorMsg = `Chyba ${response.status}`;
         
+        // DŮLEŽITÉ: Vytvoříme kopii odpovědi.
+        // Můžeme tak zkusit přečíst JSON a když to selže, přečteme text z kopie.
+        const responseClone = response.clone(); 
+
         try {
-            // Zkusíme, zda server neposlal chybovou hlášku v JSONu (to dělá náš Rate Limiter)
-            const errorData = await response.json();
+            const errorData = await response.json(); // První pokus (spotřebuje originál)
             if (errorData && errorData.error) {
-                errorMessage = errorData.error;
+                errorMsg = errorData.error;
             }
         } catch (jsonError) {
-            // Pokud to není JSON, zkusíme přečíst jako text
-            const textError = await response.text();
-            if (textError) errorMessage = textError;
+            // Druhý pokus (spotřebuje kopii - to je bezpečné)
+            const textError = await responseClone.text();
+            if (textError) {
+                errorMsg = textError;
+            }
         }
         
-        // Vyvoláme chybu, která skočí do bloku catch níže
-        throw new Error(errorMessage);
+        // Vyhodíme chybu, aby ji chytil blok catch níže
+        throw new Error(errorMsg);
       }
-      // =============================================================
+      // ====================================================
 
-      // 4. Čtení streamu (pokud je vše OK)
+      // 4. Čtení streamu
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
@@ -128,7 +133,6 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
         const chunk = decoder.decode(value, { stream: true });
         fullResponse += chunk;
 
-        // Průběžná aktualizace bubliny
         setMessages(prev => 
           prev.map(msg => 
             msg.id === botMsgId ? { ...msg, text: fullResponse } : msg
@@ -146,11 +150,11 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
 
     } catch (error) {
       console.error("Chyba při komunikaci s API:", error);
-      // 5. Zobrazení chyby v bublině bota
+      // Zobrazení chyby v bublině
       setMessages(prev => 
         prev.map(msg => 
           msg.id === botMsgId ? { ...msg, 
-            text: `⚠️ ${error.message}` // Zde se vypíše text z Rate Limiteru
+            text: `⚠️ ${error.message}` 
           } : msg
         )
       );
