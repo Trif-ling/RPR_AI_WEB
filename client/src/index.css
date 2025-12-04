@@ -18,7 +18,6 @@ html { scrollbar-width: none; }
   --accent-color: #00d084;
 }
 
-/* === HLAVNÍ OPRAVA PRO ROBOTA === */
 html, body {
   margin: 0; padding: 0;
   font-family: 'Raleway', sans-serif;
@@ -34,22 +33,7 @@ html, body {
   position: static !important;
 }
 
-/* === KONTEJNER ROBOTA === */
-#robot-overlay-container {
-  position: fixed !important; 
-  bottom: 0 !important;
-  right: 0 !important;
-  width: 450px !important;
-  height: 550px !important;
-  
-  /* ZMĚNA: Snižujeme prioritu, aby ho bublina (z-index 9999) mohla překrýt */
-  z-index: 50 !important; 
-  
-  pointer-events: none;      
-  transform: translate3d(0, 0, 0); 
-}
-
-/* Třídy pro body */
+/* === Třídy pro body === */
 body.dark-mode {
   background-color: var(--bg-color-dark);
   color: var(--text-color-dark);
@@ -64,6 +48,14 @@ body.light-mode {
   --nav-bg: var(--nav-bg-light);
   --text-color: var(--text-color-light);
   --box-bg: var(--box-bg-light);
+}
+
+/* === SKRYTÍ ROBOTA NA MOBILU === */
+/* Toto zajistí, že na telefonech a tabletech (pod 768px) obrázek zmizí */
+@media (max-width: 768px) {
+  .hero-samurai {
+    display: none !important;
+  }
 }
 
 /* === HIERARCHIE VRSTEV === */
@@ -90,11 +82,23 @@ body.light-mode {
 /* 2. Obsah */
 .content-wrapper {
   position: relative;
-  z-index: 20; 
+  z-index: 20; /* Vyšší než robot (-1), takže text bude nad ním */
   isolation: isolate;
 }
 
 /* Globální transitions */
 h1, h2, h3, h4, p, span, a, button, input, section, div {
   transition: color 0.4s ease, border-color 0.4s ease, fill 0.4s ease;
+}
+
+/* Starý kód pro kontejner robota (pokud už nepoužíváte 3D scénu, toto už není potřeba, ale nevadí to tu) */
+#robot-overlay-container {
+  position: fixed !important; 
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 450px !important;
+  height: 550px !important;
+  z-index: 50 !important; 
+  pointer-events: none;      
+  transform: translate3d(0, 0, 0); 
 }
