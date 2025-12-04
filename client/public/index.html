@@ -1,51 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Webová aplikace Junomi" />
     <title>Junomi</title>
+
+    <!-- Fonty -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+    <!-- Theme Script (Dark/Light mode) -->
     <script>
       (function() {
-        var savedTheme = localStorage.getItem('theme') || 'dark';
-        if (savedTheme === 'dark') {
-          document.documentElement.classList.add('dark-mode');
-          document.documentElement.style.backgroundColor = '#000000';
-        } else {
-          document.documentElement.classList.add('light-mode');
-          document.documentElement.style.backgroundColor = '#ffffff';
+        try {
+          var savedTheme = localStorage.getItem('theme') || 'dark';
+          // Volitelné: Zohlednění systémového nastavení, pokud není nic uloženo
+          // if (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          //   savedTheme = 'light';
+          // }
+
+          if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+            document.documentElement.style.backgroundColor = '#000000';
+          } else {
+            document.documentElement.classList.add('light-mode');
+            document.documentElement.style.backgroundColor = '#ffffff';
+          }
+        } catch (e) {
+          console.error('Chyba při nastavování tématu:', e);
         }
       })();
     </script>
     
     <style>
+      /* Základní reset a nastavení */
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
       body, html {
-        transform: none !important;
         width: 100%;
         height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'Raleway', sans-serif; /* Aplikování načteného fontu */
+        -webkit-font-smoothing: antialiased; /* Hezčí vykreslování písma */
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Zde můžete přidat globální proměnné pro barvy, pokud je používáte v JS */
+      :root {
+        --bg-color: #ffffff;
+        --text-color: #000000;
+      }
+      
+      .dark-mode {
+        --bg-color: #000000;
+        --text-color: #ffffff;
       }
     </style>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>Pro spuštění této aplikace musíte mít povolený JavaScript.</noscript>
     
     <div id="root"></div>
     
-    <!-- KONTEJNER PRO ROBOTA -->
-    <!-- ZMĚNA: z-index nastaven na 50 (aby byl pod bublinou) -->
-    <div id="robot-overlay-container" style="
-      position: fixed; 
-      bottom: 0; 
-      right: 0; 
-      width: 450px; 
-      height: 550px; 
-      z-index: 50; 
-      pointer-events: none;
-      transform: translate3d(0,0,0);
-    "></div>
+    <!-- ZDE VLOŽTE VÁŠ HLAVNÍ SKRIPT APLIKACE (např. z React build procesu) -->
+    <!-- <script src="/static/js/main.js"></script> -->
     
   </body>
 </html>
