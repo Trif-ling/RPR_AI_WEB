@@ -6,25 +6,26 @@ import './ChatPage.css';
 
 const BACKEND_URL = "https://monkfish-app-grkr8.ondigitalocean.app/rpr-ai-web-server";
 
-function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
+function ChatPage({ text }) {
   
-  // Inicializace s prázdným textem nebo defaultním, 
-  // ale hned ho přepíšeme v useEffect podle jazyka
+  // --- STAVOVÉ PROMĚNNÉ ---
   const [messages, setMessages] = useState([
     { id: 1, sender: 'bot', text: text?.chat_welcome || "..." },
   ]);
 
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  
+  // Reference
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
-  // EFEKT: Aktualizace první zprávy při změně jazyka
+  // --- EFEKTY ---
+  
+  // Aktualizace uvítací zprávy při změně jazyka
   useEffect(() => {
     setMessages(prevMessages => {
-      // Vytvoříme kopii zpráv
       const newMessages = [...prevMessages];
-      // Najdeme první zprávu (která je od bota a je to uvítání)
-      // Předpokládáme, že první zpráva s ID 1 je vždy uvítací
       const welcomeMsgIndex = newMessages.findIndex(msg => msg.id === 1);
       
       if (welcomeMsgIndex !== -1) {
@@ -35,11 +36,9 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
       }
       return newMessages;
     });
-  }, [text]); // Spustí se vždy, když se změní objekt 'text' (při změně jazyka)
+  }, [text]);
 
-
-  // --- Utility funkce ---
-
+  // Scroll dolů při nové zprávě
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -47,6 +46,31 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Vrácení fokusu do inputu po odeslání
+  useEffect(() => {
+    if (!isTyping) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 10);
+    }
+  }, [isTyping]);
+
+  // Automatická výška textarea
+  const adjustTextareaHeight = () => {
+    const textarea = inputRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto'; 
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [inputValue]);
+
+
+  // --- POMOCNÉ FUNKCE ---
 
   const prepareHistory = (currentMessages) => {
     return currentMessages.map(msg => ({
@@ -64,22 +88,24 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
     return <div dangerouslySetInnerHTML={{ __html: cleanHtml }} />;
   };
 
-  // --- Hlavní funkce Odeslání Zprávy ---
+  // --- ODESLÁNÍ ZPRÁVY ---
 
   const handleSend = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!inputValue.trim() || isTyping) return;
 
     const userText = inputValue;
     setInputValue("");
     setIsTyping(true);
+    
+    if (inputRef.current) inputRef.current.style.height = 'auto';
 
     // 1. Přidat zprávu uživatele
     const newUserMsg = { id: Date.now(), sender: 'user', text: userText };
     const historyToSend = [...messages, newUserMsg]; 
     setMessages(historyToSend);
 
-    // 2. Přidat prázdnou bublinu pro bota
+    // 2. Přidat placeholder pro bota
     const botMsgId = Date.now() + 1;
     const initialBotMsg = { id: botMsgId, sender: 'bot', text: "" };
     setMessages(prev => [...prev, initialBotMsg]);
@@ -87,7 +113,6 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
     let fullResponse = "";
 
     try {
-      // 3. Volání backendu
       const response = await fetch(`${BACKEND_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -96,114 +121,154 @@ function ChatPage({ text }) { // Přijímáme 'text' (překlady) jako prop
         })
       });
 
-      // === OPRAVA CHYBY "Body has already been consumed" ===
       if (!response.ok) {
         let errorMsg = `Chyba ${response.status}`;
-        
-        // DŮLEŽITÉ: Vytvoříme kopii odpovědi.
-        // Můžeme tak zkusit přečíst JSON a když to selže, přečteme text z kopie.
         const responseClone = response.clone(); 
-
         try {
-            const errorData = await response.json(); // První pokus (spotřebuje originál)
-            if (errorData && errorData.error) {
-                errorMsg = errorData.error;
-            }
+            const errorData = await response.json();
+            if (errorData && errorData.error) errorMsg = errorData.error;
         } catch (jsonError) {
-            // Druhý pokus (spotřebuje kopii - to je bezpečné)
             const textError = await responseClone.text();
-            if (textError) {
-                errorMsg = textError;
-            }
+            if (textError) errorMsg = textError;
         }
-        
-        // Vyhodíme chybu, aby ji chytil blok catch níže
         throw new Error(errorMsg);
       }
-      // ====================================================
 
-      // 4. Čtení streamu
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         const chunk = decoder.decode(value, { stream: true });
         fullResponse += chunk;
-
-        setMessages(prev => 
-          prev.map(msg => 
-            msg.id === botMsgId ? { ...msg, text: fullResponse } : msg
-          )
-        );
+        setMessages(prev => prev.map(msg => msg.id === botMsgId ? { ...msg, text: fullResponse } : msg));
         scrollToBottom();
       }
-
-      // Finální uložení
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === botMsgId ? { ...msg, text: fullResponse } : msg
-        )
-      );
+      setMessages(prev => prev.map(msg => msg.id === botMsgId ? { ...msg, text: fullResponse } : msg));
 
     } catch (error) {
-      console.error("Chyba při komunikaci s API:", error);
-      // Zobrazení chyby v bublině
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === botMsgId ? { ...msg, 
-            text: `⚠️ ${error.message}` 
-          } : msg
-        )
-      );
+      console.error("Chyba API:", error);
+      setMessages(prev => prev.map(msg => msg.id === botMsgId ? { ...msg, text: `⚠️ ${error.message}` } : msg));
       scrollToBottom();
     } finally {
       setIsTyping(false);
     }
   };
 
-  return (
-    <div className="chat-container">
-      <div className="chat-header">
-        <div className="bot-avatar">JU</div>
-        <div className="chat-info">
-          <h3>Junomi assistent</h3>
-          <span className="status-dot" style={{ backgroundColor: isTyping ? '#eebb00' : '#00d084' }}></span> 
-          <span style={{color: isTyping ? '#eebb00' : '#00d084'}}>
-            {isTyping ? 'píše...' : 'Online'}
-          </span>
-        </div>
-      </div>
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend(e);
+    }
+  };
 
-      <div className="messages-area">
-        {messages.map((msg) => (
-          <div key={msg.id} className={`message-row ${msg.sender === 'user' ? 'user-row' : 'bot-row'}`}>
-            {msg.sender === 'bot' && <div className="msg-avatar">JU</div>}
-            
-            <div className={`message-bubble ${msg.sender === 'user' ? 'user-bubble' : 'bot-bubble'}`}>
-              {renderMessageContent(msg.text, msg.sender)}
+  // --- RENDEROVÁNÍ (HTML) ---
+  return (
+    <div className="app-layout">
+      
+      {/* === LEVÝ PANEL (SIDEBAR) === */}
+      <aside className="sidebar">
+        <button className="new-chat-btn" onClick={() => window.location.reload()}>
+          <span>+</span> Nový chat
+        </button>
+
+        <div className="history-list">
+          
+          <div className="history-group">Dnes</div>
+          
+          {/* Ukázka aktivního chatu */}
+          <div className="history-item active">
+            <span className="history-title">Návrh webu JuNoMi</span>
+            <div className="history-actions">
+              <button title="Upravit">✎</button>
+              <button title="Smazat">🗑️</button>
             </div>
           </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
 
-      <form className="input-area" onSubmit={handleSend}>
-        <input 
-          type="text" 
-          /* ZDE JE ZMĚNA: Placeholder z překladů */
-          placeholder={isTyping ? "..." : text.chat_placeholder} 
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          disabled={isTyping} 
-          autoFocus
-        />
-        <button type="submit" className="send-btn" disabled={isTyping || !inputValue.trim()}>
-          ➤
-        </button>
-      </form>
+          <div className="history-item">
+            <span className="history-title">Vysvětlení Reactu pro začátečníky</span>
+          </div>
+          
+          <div className="history-group">Včera</div>
+          
+          <div className="history-item">
+            <span className="history-title">Recept na guláš</span>
+          </div>
+
+          <div className="history-item">
+            <span className="history-title">Analýza textu pro školní práci</span>
+          </div>
+
+          <div className="history-group">Předchozí 7 dní</div>
+          
+          <div className="history-item">
+            <span className="history-title">Generování obrázků</span>
+          </div>
+        </div>
+        
+        <div className="sidebar-footer">
+          <div className="user-profile">
+            <div className="avatar-small">DM</div>
+            <div className="user-info">
+              <span className="user-name">Daniel Milota</span>
+              <span className="user-status">Pro Plan</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* === HLAVNÍ CHAT === */}
+      <main className="chat-main">
+        <div className="chat-container">
+          
+          {/* Hlavička chatu */}
+          <div className="chat-header">
+            <div className="bot-avatar">JU</div>
+            <div className="chat-info">
+              <h3>Junomi assistent</h3>
+              <span className="status-dot" style={{ backgroundColor: isTyping ? '#eebb00' : '#00d084' }}></span> 
+              <span style={{color: isTyping ? '#eebb00' : '#00d084'}}>
+                {isTyping ? 'píše...' : 'Online'}
+              </span>
+            </div>
+          </div>
+
+          {/* Zprávy */}
+          <div className="messages-area">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`message-row ${msg.sender === 'user' ? 'user-row' : 'bot-row'}`}>
+                {msg.sender === 'bot' && <div className="msg-avatar">JU</div>}
+                
+                <div className={`message-bubble ${msg.sender === 'user' ? 'user-bubble' : 'bot-bubble'}`}>
+                  {renderMessageContent(msg.text, msg.sender)}
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Vstupní pole */}
+          <form className="input-area" onSubmit={handleSend}>
+            <textarea
+              ref={inputRef}
+              placeholder={isTyping ? "..." : text.chat_placeholder}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isTyping}
+              autoFocus
+              rows={1}
+            />
+            <button type="submit" className="send-btn" disabled={isTyping || !inputValue.trim()}>
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+              </svg>
+            </button>
+          </form>
+
+        </div>
+      </main>
     </div>
   );
 }
