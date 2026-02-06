@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import './ChatPage.css';
+import { Helmet } from 'react-helmet-async';
 
 const BACKEND_URL = "https://monkfish-app-grkr8.ondigitalocean.app/rpr-ai-web-server";
 
@@ -167,6 +168,13 @@ function ChatPage({ text }) {
   return (
     <div className="app-layout">
       
+      {}
+      <Helmet>
+        <title>Chat s AI | RPR AI Web</title>
+        <meta name="description" content="Potřebujete poradit? Náš AI asistent je tu pro vás 24/7." />
+      </Helmet>
+      {}
+
       {/* === LEVÝ PANEL (SIDEBAR) === */}
       <aside className="sidebar">
         <button className="new-chat-btn" onClick={() => window.location.reload()}>

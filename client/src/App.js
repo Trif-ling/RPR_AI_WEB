@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async'; // <--- 1. PŘIDÁNO TADY
 
 // Import komponent
 import Navbar from './components/Navbar';
@@ -62,62 +63,64 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App" id={theme} style={{ position: 'relative', overflowX: 'hidden' }}>
-        
-        <div 
-          className={`inversion-bubble ${isToggled ? 'expanded' : ''}`}
-          style={{ 
-            left: bubblePos.x, 
-            top: bubblePos.y,
-            zIndex: bubbleZIndex 
-          }}
-        />
-
-        <div className="content-wrapper" style={{ position: 'relative', zIndex: 1 }}>
-          <Navbar 
-            isToggled={isToggled} 
-            toggleTheme={handleThemeChange} 
-            language={language} 
-            setLanguage={setLanguage}
-            text={t} 
-            currentThemeState={theme}
+    <HelmetProvider> {}
+      <Router>
+        <div className="App" id={theme} style={{ position: 'relative', overflowX: 'hidden' }}>
+          
+          <div 
+            className={`inversion-bubble ${isToggled ? 'expanded' : ''}`}
+            style={{ 
+              left: bubblePos.x, 
+              top: bubblePos.y,
+              zIndex: bubbleZIndex 
+            }}
           />
 
-          <Routes>
-            <Route path="/" element={
-              <>
-                {/* OBRÁZEK SAMURAJE */}
-                <img 
-                  src="/Samurai-removebg-preview.png" 
-                  alt="Samurai" 
-                  className="hero-samurai"
-                  style={{
-                    position: 'absolute',
-                    top: '80px',
-                    right: '0',
-                    width: '50vw',
-                    maxWidth: '800px',
-                    minWidth: '300px',
-                    zIndex: -1,           // ZAJISTÍ, ŽE BUDE VŽDY VESPOD
-                    pointerEvents: 'none',
-                    opacity: 0.6          // PRŮHLEDNOST: Text bude čitelnější
-                  }}
-                />
+          <div className="content-wrapper" style={{ position: 'relative', zIndex: 1 }}>
+            <Navbar 
+              isToggled={isToggled} 
+              toggleTheme={handleThemeChange} 
+              language={language} 
+              setLanguage={setLanguage}
+              text={t} 
+              currentThemeState={theme}
+            />
 
-                <Hero text={t} />
-                <AboutUs text={t} />
-                <Statistics text={t} />
-                <CallToAction text={t} />
-                <Footer text={t} />
-              </>
-            } />
+            <Routes>
+              <Route path="/" element={
+                <>
+                  {/* OBRÁZEK SAMURAJE */}
+                  <img 
+                    src="/Samurai-removebg-preview.png" 
+                    alt="Samurai" 
+                    className="hero-samurai"
+                    style={{
+                      position: 'absolute',
+                      top: '80px',
+                      right: '0',
+                      width: '50vw',
+                      maxWidth: '800px',
+                      minWidth: '300px',
+                      zIndex: -1,          
+                      pointerEvents: 'none',
+                      opacity: 0.6         
+                           }}
+                  />
 
-            <Route path="/chat" element={<ChatPage text={t} />} />
-          </Routes>
+                  <Hero text={t} />
+                  <AboutUs text={t} />
+                  <Statistics text={t} />
+                  <CallToAction text={t} />
+                  <Footer text={t} />
+                </>
+              } />
+
+              <Route path="/chat" element={<ChatPage text={t} />} />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </HelmetProvider> {}
   );
 }
 
