@@ -189,3 +189,30 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
     order: 2;
   }
 }
+
+/* === OPRAVA VÝBĚRU JAZYKA (SELECT) === */
+
+/* Stylování samotného tlačítka */
+.navbar select {
+  background-color: transparent;       /* Průhledné pozadí tlačítka */
+  color: var(--text-color);            /* Barva textu podle režimu */
+  border: 1px solid var(--text-color); /* Rámeček podle textu */
+  border-radius: 20px;                 /* Kulaté rohy */
+  padding: 5px 10px;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.navbar select:hover {
+  opacity: 1;
+  background-color: var(--box-bg);    /* Při najetí myší jemně podbarvit */
+}
+
+.navbar select option {
+  background-color: var(--bg-color);   /* Pozadí možností (Černá v noci, Bílá ve dne) */
+  color: var(--text-color);            /* Text možností */
+  padding: 10px;
+}

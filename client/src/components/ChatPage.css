@@ -3,20 +3,19 @@
 /* === ROZLOŽENÍ STRÁNKY (GRID) === */
 .app-layout {
   display: grid;
-  /* Levý sloupec (sidebar) 260px, Pravý (chat) zbytek */
   grid-template-columns: 260px 1fr; 
   height: 100vh;
   width: 100vw;
   background-color: var(--bg-color);
-  padding-top: 80px; /* Místo pro Navbar nahoře */
+  padding-top: 80px; 
   box-sizing: border-box;
-  overflow: hidden; /* Zabrání scrollování celé stránky */
+  overflow: hidden; 
 }
 
 /* === SIDEBAR (LEVÝ PANEL) === */
 .sidebar {
-  background-color: #050505; /* Tmavé pozadí sidebaru */
-  border-right: 1px solid rgba(128, 128, 128, 0.1);
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   padding: 15px;
@@ -28,7 +27,7 @@
 /* Tlačítko Nový chat */
 .new-chat-btn {
   background-color: transparent;
-  border: 1px solid rgba(128, 128, 128, 0.3);
+  border: 1px solid var(--border-color);
   color: var(--text-color);
   padding: 12px;
   border-radius: 8px;
@@ -37,12 +36,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: all 0.2s;
   flex-shrink: 0;
 }
 
 .new-chat-btn:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--box-bg);
   border-color: var(--accent-color);
 }
 
@@ -60,17 +58,15 @@
   flex-direction: column;
 }
 
-/* Skupiny (Dnes, Včera...) */
 .history-group {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-color);
+  opacity: 0.6;
   margin: 20px 0 8px 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* Položka historie (řádek) */
 .history-item {
   position: relative;
   display: flex;
@@ -80,13 +76,12 @@
   margin-bottom: 2px;
   border-radius: 8px;
   cursor: pointer;
-  color: #ccc;
+  color: var(--text-color);
+  opacity: 0.8;
   font-size: 0.9rem;
-  transition: background-color 0.2s, color 0.2s;
   height: 40px; 
 }
 
-/* Název chatu - oříznutí */
 .history-title {
   white-space: nowrap;
   overflow: hidden;
@@ -96,33 +91,29 @@
 }
 
 .history-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background-color: var(--box-bg);
+  color: var(--text-color);
+  opacity: 1;
 }
 
-/* Aktivní položka */
 .history-item.active {
   background-color: rgba(0, 208, 132, 0.15);
   color: #00d084;
   font-weight: 500;
+  opacity: 1;
 }
 
-/* Akční tlačítka (skrytá, zobrazí se na hover) */
+/* Akční tlačítka */
 .history-actions {
   display: none;
   align-items: center;
   gap: 2px;
-  background: linear-gradient(to right, transparent, #050505 20%);
+  background: transparent;
   padding-left: 8px;
 }
 
 .history-item:hover .history-actions {
   display: flex;
-  background-color: #1a1a1a; /* Musí ladit s pozadím hoveru */
-}
-
-.history-item.active:hover .history-actions {
-  background-color: #0d261e; /* Musí ladit s aktivním pozadím */
 }
 
 .history-actions button {
@@ -130,24 +121,19 @@
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  color: #888;
+  color: var(--text-color);
+  opacity: 0.5;
   padding: 4px;
-  opacity: 0.7;
-  transition: opacity 0.2s, color 0.2s;
 }
 
 .history-actions button:hover {
   opacity: 1;
-  color: #fff;
-}
-
-.history-actions button[title="Smazat"]:hover {
-  color: #ff4d4d;
+  color: var(--accent-color);
 }
 
 /* Patička profilu */
 .sidebar-footer {
-  border-top: 1px solid rgba(128, 128, 128, 0.1);
+  border-top: 1px solid var(--border-color);
   padding-top: 15px;
   margin-top: auto;
   flex-shrink: 0;
@@ -157,7 +143,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #fff;
+  color: var(--text-color);
   font-size: 0.9rem;
 }
 
@@ -168,7 +154,6 @@
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-weight: bold;
-  font-size: 0.9rem;
   flex-shrink: 0;
 }
 
@@ -182,12 +167,13 @@
 .user-name {
   font-size: 0.9rem;
   font-weight: 600;
-  white-space: nowrap;
+  color: var(--text-color);
 }
 
 .user-status {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-color);
+  opacity: 0.6;
 }
 
 /* === HLAVNÍ ČÁST (CHAT) === */
@@ -197,7 +183,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: transparent;
+  background-color: var(--bg-color);
 }
 
 /* Kontejner chatu */
@@ -206,20 +192,20 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  max-width: 1100px; /* Šířka obsahu chatu */
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0;
   box-sizing: border-box;
 }
 
 /* Hlavička chatu */
 .chat-header {
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(139, 139, 139, 0.1);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   gap: 15px;
   flex-shrink: 0; 
+  background-color: var(--bg-color);
 }
 
 .bot-avatar {
@@ -247,7 +233,7 @@
 
 .message-row {
   display: flex; align-items: flex-end; gap: 10px;
-  max-width: 75%;
+  max-width: 75%; /* Zpráva nikdy nebude širší než 75% obrazovky */
 }
 
 .user-row { align-self: flex-end; flex-direction: row-reverse; }
@@ -267,14 +253,20 @@
   font-size: 1rem;
   line-height: 1.6;
   position: relative;
-  word-wrap: break-word;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  
+  /* 👇 TOTO JE TA OPRAVA PRO DLOUHÉ TEXTY 👇 */
+  word-wrap: break-word;       /* Pro starší prohlížeče */
+  overflow-wrap: break-word;   /* Standardní zalamování */
+  word-break: break-word;      /* Donutí dlouhé slovo se zlomit */
+  /* 👆 KONEC OPRAVY 👆 */
+
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .bot-bubble {
-  background-color: var(--box-bg); 
+  background-color: var(--box-bg);
   color: var(--text-color);
-  border: 1px solid rgba(128, 128, 128, 0.2);
+  border: 1px solid var(--border-color);
   border-bottom-left-radius: 4px; 
 }
 
@@ -295,14 +287,15 @@
   width: 100%;
   max-width: 950px;
   margin: 0 auto;
+  background-color: var(--bg-color);
 }
 
 .input-area textarea {
   flex: 1;
   padding: 14px 20px;
   border-radius: 24px;
-  border: 1px solid rgba(128, 128, 128, 0.3);
-  background-color: var(--box-bg);
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
   color: var(--text-color);
   font-size: 1rem;
   font-family: inherit;
@@ -315,6 +308,7 @@
 
 .input-area textarea:focus {
   border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(0, 208, 132, 0.2);
 }
 
 .send-btn {
@@ -326,29 +320,31 @@
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.2s;
 }
 
-.send-btn:hover:not(:disabled) { transform: scale(1.1); background-color: #00a368; }
-.send-btn:disabled { background-color: rgba(128,128,128,0.3); cursor: not-allowed; }
 .send-btn svg { fill: #000; margin-left: 3px; }
-.send-btn:disabled svg { fill: rgba(255,255,255,0.3); }
+.send-btn:disabled { background-color: var(--box-bg); opacity: 0.5; cursor: not-allowed; }
 
-/* Mobilní zobrazení - skrytí sidebaru */
+/* Mobil */
 @media (max-width: 768px) {
-  .app-layout {
-    grid-template-columns: 1fr;
-  }
+  .app-layout { grid-template-columns: 1fr; }
   .sidebar { display: none; }
   .chat-container { max-width: 100%; }
   .message-row { max-width: 90%; }
-  .input-area { padding: 10px; }
 }
 
 /* Markdown styly */
-.bot-bubble p { margin: 8px 0; }
-.bot-bubble p:first-child { margin-top: 0; }
-.bot-bubble p:last-child { margin-bottom: 0; }
-.bot-bubble pre { background: #111; padding: 10px; border-radius: 6px; overflow-x: auto; margin: 10px 0; }
-.bot-bubble code { background: rgba(0,0,0,0.3); padding: 2px 4px; border-radius: 4px; font-family: monospace; }
-.bot-bubble ul, .bot-bubble ol { margin: 5px 0; padding-left: 20px; }
+.bot-bubble pre { 
+  background: #1e1e1e; 
+  padding: 10px; 
+  border-radius: 6px; 
+  overflow-x: auto; 
+  margin: 10px 0; 
+  color: #fff; 
+}
+.bot-bubble code { 
+  background: rgba(0,0,0,0.1); 
+  padding: 2px 4px; 
+  border-radius: 4px; 
+  font-family: monospace; 
+}

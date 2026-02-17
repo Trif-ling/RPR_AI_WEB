@@ -5,15 +5,23 @@
 html { scrollbar-width: none; }
 
 :root {
+  /* === TMAVÝ REŽIM (DEFAULT) === */
   --bg-color-dark: #000000;
   --text-color-dark: #ffffff;
-  --box-bg-dark: rgba(12, 75, 51, 0.3); 
+  --box-bg-dark: rgba(12, 75, 51, 0.3); /* Tmavá průhledná zelená pro bubliny */
   --nav-bg-dark: #000000;
+  --sidebar-bg-dark: #050505;
+  --border-color-dark: rgba(255, 255, 255, 0.1);
+  --input-bg-dark: #1a1a1a; /* Tmavě šedá pro input */
 
+  /* === SVĚTLÝ REŽIM (MODERNÍ LOOK) === */
   --bg-color-light: #ffffff;
-  --text-color-light: #000000;
-  --box-bg-light: rgba(0, 128, 80, 0.25); 
+  --text-color-light: #1a1a1a;     /* Téměř černá, lépe se čte */
+  --box-bg-light: #f0f2f5;         /* Světle šedá (jako Messenger) */
   --nav-bg-light: #ffffff;
+  --sidebar-bg-light: #ffffff;
+  --border-color-light: #e4e6eb;   /* Velmi jemná linka */
+  --input-bg-light: #f0f2f5;       /* Světle šedé pozadí pro input */
 
   --accent-color: #00d084;
 }
@@ -23,55 +31,63 @@ html, body {
   font-family: 'Raleway', sans-serif;
   overflow-x: hidden;
   scroll-behavior: smooth;
-
-  /* Zakázání transformací na body - kritické pro fixní pozici */
   width: 100%;
   height: 100%;
-  transform: none !important;
-  perspective: none !important;
-  filter: none !important;
-  position: static !important;
+  
+  /* Aplikujeme základní barvy na body */
+  background-color: var(--bg-color); 
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* === Třídy pro body === */
+/* === APLIKACE BAREV PODLE REŽIMU === */
 body.dark-mode {
-  background-color: var(--bg-color-dark);
-  color: var(--text-color-dark);
-  --nav-bg: var(--nav-bg-dark);
+  --bg-color: var(--bg-color-dark);
   --text-color: var(--text-color-dark);
   --box-bg: var(--box-bg-dark);
+  --sidebar-bg: var(--sidebar-bg-dark);
+  --border-color: var(--border-color-dark);
+  --input-bg: var(--input-bg-dark);
+  
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 body.light-mode {
-  background-color: var(--bg-color-light);
-  color: var(--text-color-light);
-  --nav-bg: var(--nav-bg-light);
+  --bg-color: var(--bg-color-light);
   --text-color: var(--text-color-light);
   --box-bg: var(--box-bg-light);
+  --sidebar-bg: var(--sidebar-bg-light);
+  --border-color: var(--border-color-light);
+  --input-bg: var(--input-bg-light);
+
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Zajištění, že celá aplikace drží barvu */
+.App {
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
 }
 
 /* === SKRYTÍ ROBOTA NA MOBILU === */
-/* Toto zajistí, že na telefonech a tabletech (pod 768px) obrázek zmizí */
 @media (max-width: 768px) {
   .hero-samurai {
     display: none !important;
   }
 }
 
-/* === HIERARCHIE VRSTEV === */
-
-/* 1. Bublina */
+/* === BUBLINA PŘECHODU (ANIMACE) === */
 .inversion-bubble {
   position: fixed;
-  width: 30px; 
-  height: 30px;
+  width: 30px; height: 30px;
   border-radius: 50%;
   pointer-events: none; 
   background-color: #ffffff;
   transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
   transform: translate(-50%, -50%) scale(0);
-  
-  /* Z-Index zde je jen default, App.js ho přepisuje na 9999 při aktivaci */
   z-index: 9999; 
 }
 
@@ -79,26 +95,13 @@ body.light-mode {
   transform: translate(-50%, -50%) scale(300);
 }
 
-/* 2. Obsah */
 .content-wrapper {
   position: relative;
-  z-index: 20; /* Vyšší než robot (-1), takže text bude nad ním */
+  z-index: 20; 
   isolation: isolate;
 }
 
-/* Globální transitions */
-h1, h2, h3, h4, p, span, a, button, input, section, div {
-  transition: color 0.4s ease, border-color 0.4s ease, fill 0.4s ease;
-}
-
-/* Starý kód pro kontejner robota (pokud už nepoužíváte 3D scénu, toto už není potřeba, ale nevadí to tu) */
-#robot-overlay-container {
-  position: fixed !important; 
-  bottom: 0 !important;
-  right: 0 !important;
-  width: 450px !important;
-  height: 550px !important;
-  z-index: 50 !important; 
-  pointer-events: none;      
-  transform: translate3d(0, 0, 0); 
+/* Globální transitions pro hladkou změnu */
+h1, h2, h3, h4, p, span, a, button, input, textarea, section, div, aside {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
