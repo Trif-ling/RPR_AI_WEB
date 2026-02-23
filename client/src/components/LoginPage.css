@@ -1,0 +1,226 @@
+/* src/components/LoginPage.css */
+
+/* === 1. VYLEPŠENÉ POZADÍ STRÁNKY === */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: var(--bg-color);
+
+  /* OPRAVA: Použijeme var(--border-color) místo bílé, aby byla mřížka vidět v obou režimech */
+  background-image: 
+    radial-gradient(circle at center, rgba(0, 208, 132, 0.08) 0%, transparent 70%),
+    linear-gradient(var(--border-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+  
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  background-position: center center;
+}
+
+/* === DEFINICE ANIMACÍ === */
+
+/* Animace pro načtení stránky (vyplutí nahoru) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animace pro rotující okraj */
+@keyframes spin-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* === HLAVNÍ KONTEJNER KARTY === */
+/* === HLAVNÍ KONTEJNER KARTY === */
+.login-container-modern {
+  position: relative;
+  border-radius: 16px;
+  padding: 2px; /* Tloušťka svítící linky - zmenšeno na elegantní 2px */
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  overflow: hidden; 
+  opacity: 0; 
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.2s; 
+  z-index: 1;
+}
+
+/* === POHYBLIVÝ SVÍTÍCÍ OBRYS === */
+.login-container-modern::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: -1; 
+  
+  /* Upravený gradient pro tenčí a ostřejší paprsek (laser efekt) */
+  background: conic-gradient(
+    transparent 0%, 
+    transparent 30%, 
+    var(--accent-color) 50%, 
+    transparent 70%, 
+    transparent 100%
+  );
+  animation: spin-border 4s linear infinite;
+}
+
+.login-content-inner {
+  position: relative; /* Přidáno pro jistotu umístění vrstev */
+  z-index: 2;         /* Vynutíme, aby vnitřek vždy překryl ten rotující kužel pod ním */
+  background-color: var(--bg-color); /* Použijeme hlavní barvu - 100% neprůhledná */
+  border-radius: 14px; 
+  padding: 40px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+/* SMAZALI JSME .top-glow (ta statická linka nahoře), nahradil ji pohyblivý okraj */
+
+.login-container-modern h2 {
+  color: var(--text-color);
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: var(--text-color);
+  opacity: 0.6;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+.form-group-modern {
+  margin-bottom: 20px;
+}
+
+.form-group-modern label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Obal pro input a ikonu */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  stroke: var(--text-color);
+  opacity: 0.4;
+  pointer-events: none;
+  transition: opacity 0.2s, stroke 0.2s;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 14px 15px 14px 45px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  outline: none;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-with-icon input:focus {
+  border-color: var(--accent-color);
+}
+
+.input-with-icon:focus-within .input-icon {
+  stroke: var(--accent-color);
+  opacity: 1;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-bottom: 25px;
+  margin-top: -10px;
+}
+
+.forgot-password span {
+  color: var(--text-color);
+  opacity: 0.6;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.forgot-password span:hover {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+/* === GLOWING TLAČÍTKO === */
+.submit-btn-glow {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--accent-color);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 15px rgba(0, 208, 132, 0.4);
+}
+
+.submit-btn-glow:hover {
+  transform: translateY(-2px);
+  background-color: #00e691;
+  box-shadow: 0 4px 25px rgba(0, 208, 132, 0.6);
+}
+
+.toggle-text-modern {
+  text-align: center;
+  margin-top: 25px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.toggle-text-modern span {
+  color: var(--text-color);
+  opacity: 1;
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 5px;
+  transition: color 0.2s;
+}
+
+.toggle-text-modern span:hover {
+  color: var(--accent-color);
+}

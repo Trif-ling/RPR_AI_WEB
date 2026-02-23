@@ -11,6 +11,7 @@ import CallToAction from './components/CallToAction';
 import Footer from './components/Footer';
 import ChatPage from './components/ChatPage';
 import { translations } from './translations';
+import LoginPage from './components/LoginPage';
 import './index.css';
 
 function App() {
@@ -116,6 +117,7 @@ function App() {
               } />
 
               <Route path="/chat" element={<ChatPage text={t} />} />
+             <Route path="/login" element={<LoginPage text={t} />} />
             </Routes>
           </div>
         </div>
