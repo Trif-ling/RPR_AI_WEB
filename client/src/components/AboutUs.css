@@ -115,3 +115,59 @@
     border-radius: 30px;
   }
 }
+
+/* src/components/AboutUs.css */
+.about-section {
+  min-height: 70vh;
+  padding: 80px 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  /* VÝCHOZÍ STAV PRO ANIMACI: Skryté a posunuté o 60px dolů */
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Třída se aktivuje z JS, jakmile sem uživatel doscrolluje */
+.about-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-section h2 {
+  font-size: 2.8rem;
+  color: var(--text-color);
+  margin-bottom: 40px;
+  position: relative;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* Zelená podtrhávací linka pro design */
+.about-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--accent-color);
+}
+
+.about-content {
+  max-width: 850px;
+  text-align: center;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  line-height: 1.8;
+  opacity: 0.85;
+}
+
+.about-content p {
+  margin-bottom: 25px;
+}

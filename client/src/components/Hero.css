@@ -1,83 +1,93 @@
 /* src/components/Hero.css */
-
-.hero-container {
+.hero-section {
+  min-height: 100vh; /* ZABERE CELOU VÝŠKU OBRAZOVKY */
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 80px 10%;
-  
-  background-color: transparent; 
-  color: var(--text-color); 
-  
-  min-height: 60vh;
-}
-
-.hero-text {
-  flex-basis: 55%;
-  text-align: left;
-}
-
-.hero-text h2 {
-  font-size: clamp(2rem, 5vw, 4rem); 
-  margin-bottom: 25px;
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -1px;
-  margin-top: 0; 
-  
-  /* NOVÉ: Animace */
-  transition: transform 0.3s ease, color 0.3s ease;
-  cursor: default; /* Aby kurzor nebyl 'text', ale šipka */
-}
-
-/* NOVÉ: Efekt při najetí na nadpis */
-.hero-text h2:hover {
-  transform: translateX(10px); /* Posun doprava */
-  color: var(--accent-color); /* Volitelné: Změna barvy pro větší efekt */
-}
-
-.hero-text ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.hero-text li {
-  font-size: clamp(1rem, 1.5vw, 1.3rem);
-  margin-bottom: 15px;
-  opacity: 0.9;
+  align-items: center; /* Vycentruje obsah vertikálně */
+  padding: 0 5%;
   position: relative;
-  padding-left: 30px;
-  line-height: 1.5;
+  box-sizing: border-box;
 }
 
-/* Místo pro 3D model */
-.hero-model {
-  flex-basis: 40%;
-  height: 350px;
-  background-color: transparent; 
+.hero-content {
+  max-width: 55%; /* Udržuje text vlevo, aby zbylo místo pro robota vpravo */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 2;
+  margin-top: -50px; /* Lehký posun nahoru pro lepší vizuál */
 }
 
-/* === RESPONZIVITA (PŘIBLÍŽENÍ/MOBIL) === */
-@media (max-width: 992px) {
-  .hero-container {
-    flex-direction: column;
-    text-align: center;
-    padding: 50px 5%;
-    /* Můžeme přidat padding-top kontejneru, pokud chceme posunout celou sekci */
-    /* padding-top: 100px; */
-  }
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.1;
+  color: var(--text-color);
+}
 
-  /* ZMĚNA: Posunutí hlavního nadpisu dolů při přiblížení */
-  .hero-text h2 {
-    margin-top: 80px; /* Uprav si tuto hodnotu podle potřeby */
-  }
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+  margin: 0;
+}
 
-  .hero-text, .hero-model {
-    flex-basis: 100%;
-    margin-bottom: 30px;
-  }
+.hero-description, .hero-description-secondary {
+  font-size: 1.04rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  opacity: 0.8;
+  margin: 0;
+}
 
-  .hero-model {
-    height: 50px; 
+/* Tlačítka pod textem */
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 35px;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: #000;
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 4px 15px rgba(0, 208, 132, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: #00a368;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 208, 132, 0.5);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--box-bg);
+  border-color: var(--accent-color);
+}
+
+/* Mobilní zobrazení */
+@media (max-width: 768px) {
+  .hero-content { 
+    max-width: 100%; 
+    text-align: center; 
+    align-items: center; 
+    padding-top: 100px;
   }
+  .hero-section h1 { font-size: 2.5rem; }
+  .hero-buttons { flex-direction: column; width: 100%; }
+  .btn-primary, .btn-secondary { width: 100%; box-sizing: border-box; }
 }

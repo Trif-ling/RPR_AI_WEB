@@ -53,7 +53,7 @@
   padding: 2px; /* Tloušťka svítící linky - zmenšeno na elegantní 2px */
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.088);
   overflow: hidden; 
   opacity: 0; 
   animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
