@@ -1,17 +1,19 @@
-/* src/components/ChatPage.css */
-
 /* === ROZLOŽENÍ STRÁNKY (GRID) === */
 .app-layout {
+  /* 👇 TOTO JE TA ULTIMÁTNÍ ZBRAŇ 👇 */
+  position: fixed;   /* Přilepí chat k monitoru */
+  top: 80px;         /* Začne přesně pod Navbarem */
+  bottom: 0;         /* Natáhne se až úplně dolů k hraně obrazovky */
+  left: 0;
+  right: 0;
+  
   display: grid;
   grid-template-columns: 260px 1fr; 
-  height: 100vh;
-  width: 100vw;
   background-color: var(--bg-color);
-  padding-top: 80px; 
-  box-sizing: border-box;
+  
+  /* Zabrání jakémukoliv scrollování mimo okna zpráv */
   overflow: hidden; 
 }
-
 /* === SIDEBAR (LEVÝ PANEL) === */
 .sidebar {
   background-color: var(--sidebar-bg);
@@ -184,6 +186,7 @@
   display: flex;
   flex-direction: column;
   background-color: var(--bg-color);
+  overflow: hidden; /* 👈 OPRAVA 3: Zabrání roztahování pravé půlky */
 }
 
 /* Kontejner chatu */
@@ -195,6 +198,7 @@
   max-width: 1100px;
   margin: 0 auto;
   box-sizing: border-box;
+  overflow: hidden; /* 👈 OPRAVA 4: Jistota, že vnitřní obal neuteče */
 }
 
 /* Hlavička chatu */
@@ -229,6 +233,7 @@
   flex-direction: column;
   gap: 20px;
   scrollbar-width: thin;
+  min-height: 0; /* 👈 OPRAVA 5: MAGICKÝ TRIK, který zastaví Flexbox v roztahování stránky */
 }
 
 .message-row {
@@ -254,11 +259,10 @@
   line-height: 1.6;
   position: relative;
   
-  /* 👇 TOTO JE TA OPRAVA PRO DLOUHÉ TEXTY 👇 */
-  word-wrap: break-word;       /* Pro starší prohlížeče */
-  overflow-wrap: break-word;   /* Standardní zalamování */
-  word-break: break-word;      /* Donutí dlouhé slovo se zlomit */
-  /* 👆 KONEC OPRAVY 👆 */
+  /* Pro dlouhé texty */
+  word-wrap: break-word;      
+  overflow-wrap: break-word;  
+  word-break: break-word;      
 
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
