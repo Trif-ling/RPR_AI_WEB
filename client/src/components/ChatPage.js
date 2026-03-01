@@ -1,17 +1,18 @@
-// src/components/ChatPage.js
 import React, { useState, useEffect, useRef } from 'react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import './ChatPage.css';
 import { Helmet } from 'react-helmet-async';
 
-const BACKEND_URL = "https://monkfish-app-grkr8.ondigitalocean.app/rpr-ai-web-server";
+const BACKEND_URL = "http://localhost:3001";
 
-function ChatPage({ text }) {
+// Přidal jsem 'text' jako prop do závorky, aby aplikace nespadla, pokud ho nepošleš
+const ChatPage = ({ text = {} }) => {
   
   // --- STAVOVÉ PROMĚNNÉ ---
+  // Používáme bezpečný přístup (text?.neco || "default"), aby to nespadlo
   const [messages, setMessages] = useState([
-    { id: 1, sender: 'bot', text: text?.chat_welcome || "..." },
+    { id: 1, sender: 'bot', text: text?.chat_welcome || "Ahoj! Jak ti mohu pomoci?" },
   ]);
 
   const [inputValue, setInputValue] = useState("");
@@ -25,18 +26,20 @@ function ChatPage({ text }) {
   
   // Aktualizace uvítací zprávy při změně jazyka
   useEffect(() => {
-    setMessages(prevMessages => {
-      const newMessages = [...prevMessages];
-      const welcomeMsgIndex = newMessages.findIndex(msg => msg.id === 1);
-      
-      if (welcomeMsgIndex !== -1) {
-        newMessages[welcomeMsgIndex] = {
-          ...newMessages[welcomeMsgIndex],
-          text: text.chat_welcome
-        };
-      }
-      return newMessages;
-    });
+    if (text?.chat_welcome) {
+      setMessages(prevMessages => {
+        const newMessages = [...prevMessages];
+        const welcomeMsgIndex = newMessages.findIndex(msg => msg.id === 1);
+        
+        if (welcomeMsgIndex !== -1) {
+          newMessages[welcomeMsgIndex] = {
+            ...newMessages[welcomeMsgIndex],
+            text: text.chat_welcome
+          };
+        }
+        return newMessages;
+      });
+    }
   }, [text]);
 
   // Scroll dolů při nové zprávě
@@ -80,11 +83,14 @@ function ChatPage({ text }) {
     }));
   };
 
-  const renderMessageContent = (text, sender) => {
+  const renderMessageContent = (textMsg, sender) => {
     if (sender === 'user') {
-      return text;
+      return textMsg;
     }
-    const rawHtml = marked.parse(text);
+    // Ošetření prázdného textu před parsováním
+    if (!textMsg) return null;
+
+    const rawHtml = marked.parse(textMsg);
     const cleanHtml = DOMPurify.sanitize(rawHtml);
     return <div dangerouslySetInnerHTML={{ __html: cleanHtml }} />;
   };
@@ -124,13 +130,13 @@ function ChatPage({ text }) {
 
       if (!response.ok) {
         let errorMsg = `Chyba ${response.status}`;
-        const responseClone = response.clone(); 
+        // Pokus o bezpečné čtení chyby (může selhat, proto try/catch uvnitř)
         try {
+            const responseClone = response.clone(); 
             const errorData = await response.json();
             if (errorData && errorData.error) errorMsg = errorData.error;
-        } catch (jsonError) {
-            const textError = await responseClone.text();
-            if (textError) errorMsg = textError;
+        } catch (e) {
+             // Pokud selže JSON, zkusíme text, nebo necháme default
         }
         throw new Error(errorMsg);
       }
@@ -143,14 +149,23 @@ function ChatPage({ text }) {
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
         fullResponse += chunk;
-        setMessages(prev => prev.map(msg => msg.id === botMsgId ? { ...msg, text: fullResponse } : msg));
+        
+        // Funkcionální update stavu pro zamezení problémů s closure
+        setMessages(prev => prev.map(msg => 
+            msg.id === botMsgId ? { ...msg, text: fullResponse } : msg
+        ));
         scrollToBottom();
       }
-      setMessages(prev => prev.map(msg => msg.id === botMsgId ? { ...msg, text: fullResponse } : msg));
+      // Finální update pro jistotu
+      setMessages(prev => prev.map(msg => 
+          msg.id === botMsgId ? { ...msg, text: fullResponse } : msg
+      ));
 
     } catch (error) {
       console.error("Chyba API:", error);
-      setMessages(prev => prev.map(msg => msg.id === botMsgId ? { ...msg, text: `⚠️ ${error.message}` } : msg));
+      setMessages(prev => prev.map(msg => 
+          msg.id === botMsgId ? { ...msg, text: `⚠️ ${error.message}` } : msg
+      ));
       scrollToBottom();
     } finally {
       setIsTyping(false);
@@ -168,12 +183,10 @@ function ChatPage({ text }) {
   return (
     <div className="app-layout">
       
-      {}
       <Helmet>
         <title>Chat s AI | RPR AI Web</title>
         <meta name="description" content="Potřebujete poradit? Náš AI asistent je tu pro vás 24/7." />
       </Helmet>
-      {}
 
       {/* === LEVÝ PANEL (SIDEBAR) === */}
       <aside className="sidebar">
@@ -260,7 +273,7 @@ function ChatPage({ text }) {
           <form className="input-area" onSubmit={handleSend}>
             <textarea
               ref={inputRef}
-              placeholder={isTyping ? "..." : text.chat_placeholder}
+              placeholder={isTyping ? "..." : (text?.chat_placeholder || "Napište zprávu...")}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -279,6 +292,6 @@ function ChatPage({ text }) {
       </main>
     </div>
   );
-}
+};
 
 export default ChatPage;
