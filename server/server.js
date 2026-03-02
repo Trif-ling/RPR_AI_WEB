@@ -1,4 +1,3 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const Groq = require('groq-sdk');
@@ -35,9 +34,12 @@ app.post('/chat', chatLimiter, async (req, res) => {
     const { history } = req.body;
 
     // Nastavení hlaviček pro streamování
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
     res.setHeader('Transfer-Encoding', 'chunked');
     res.setHeader('Connection', 'keep-alive'); // Doporučeno pro stabilní stream
+    res.setHeader('Cache-Control', 'no-cache, no-transform'); 
+    res.setHeader('X-Accel-Buffering', 'no'); 
+    res.flushHeaders();
 
     try {
         const stream = await groq.chat.completions.create({
