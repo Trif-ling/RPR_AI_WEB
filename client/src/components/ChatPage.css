@@ -1,9 +1,7 @@
-/* === ROZLOŽENÍ STRÁNKY (GRID) === */
 .app-layout {
-  /* 👇 TOTO JE TA ULTIMÁTNÍ ZBRAŇ 👇 */
-  position: fixed;   /* Přilepí chat k monitoru */
-  top: 80px;         /* Začne přesně pod Navbarem */
-  bottom: 0;         /* Natáhne se až úplně dolů k hraně obrazovky */
+  position: fixed;   
+  top: 80px;       
+  bottom: 0;      
   left: 0;
   right: 0;
   
@@ -11,10 +9,8 @@
   grid-template-columns: 260px 1fr; 
   background-color: var(--bg-color);
   
-  /* Zabrání jakémukoliv scrollování mimo okna zpráv */
   overflow: hidden; 
 }
-/* === SIDEBAR (LEVÝ PANEL) === */
 .sidebar {
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
@@ -26,7 +22,6 @@
   overflow-y: auto;
 }
 
-/* Tlačítko Nový chat */
 .new-chat-btn {
   background-color: transparent;
   border: 1px solid var(--border-color);
@@ -52,7 +47,6 @@
   color: var(--accent-color);
 }
 
-/* Seznam historie */
 .history-list {
   flex: 1;
   overflow-y: auto;
