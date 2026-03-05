@@ -1,0 +1,97 @@
+/* src/components/CookieBanner.css */
+
+.cookie-banner-modern {
+  position: fixed;
+  bottom: 30px;
+  right: 30px; /* 👈 Přesunuto do pravého rohu */
+  width: 360px; /* 👈 Menší, kompaktnější šířka */
+  background-color: var(--box-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 24px; /* 👈 Více kulaté (tvar bubliny) */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 208, 132, 0.15);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  padding: 25px;
+  
+  /* Animace vyjetí z pravého dolního rohu */
+  animation: popUpBubble 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes popUpBubble {
+  from { opacity: 0; transform: translateY(50px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cookie-content {
+  display: flex;
+  flex-direction: column; /* Text a tlačítka hezky pod sebou */
+  gap: 20px;
+}
+
+.cookie-text h4 {
+  margin: 0 0 10px 0;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cookie-text p {
+  margin: 0;
+  color: var(--text-color);
+  opacity: 0.7;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.cookie-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-accept, .btn-decline {
+  flex: 1; /* Tlačítka si rozdělí místo napůl */
+  padding: 10px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.btn-accept {
+  background-color: var(--accent-color);
+  color: #000;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 208, 132, 0.3);
+}
+
+.btn-accept:hover {
+  background-color: #00a368;
+  transform: translateY(-2px);
+}
+
+.btn-decline {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  opacity: 0.8;
+}
+
+.btn-decline:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  opacity: 1;
+}
+
+/* === MOBILNÍ ZOBRAZENÍ === */
+@media (max-width: 768px) {
+  .cookie-banner-modern {
+    right: 5%;
+    left: 5%;
+    width: 90%;
+    bottom: 20px;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async'; // <--- 1. PŘIDÁNO TADY
+import { HelmetProvider } from 'react-helmet-async';
 
 // Import komponent
 import Navbar from './components/Navbar';
@@ -13,6 +13,8 @@ import ChatPage from './components/ChatPage';
 import { translations } from './translations';
 import LoginPage from './components/LoginPage';
 import './index.css';
+import CookieBanner from './components/CookieBanner';
+import PrivacyPage from './components/PrivacyPage';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -64,7 +66,7 @@ function App() {
   };
 
   return (
-    <HelmetProvider> {}
+    <HelmetProvider> 
       <Router>
         <div className="App" id={theme} style={{ position: 'relative', overflowX: 'hidden' }}>
           
@@ -76,6 +78,8 @@ function App() {
               zIndex: bubbleZIndex 
             }}
           />
+
+          <CookieBanner />
 
           <div className="content-wrapper" style={{ position: 'relative', zIndex: 1 }}>
             <Navbar 
@@ -117,7 +121,11 @@ function App() {
               } />
 
               <Route path="/chat" element={<ChatPage text={t} />} />
-             <Route path="/login" element={<LoginPage text={t} />} />
+              <Route path="/login" element={<LoginPage text={t} />} />
+              
+              {/* 👇 TADY JE TA PŘIDANÁ OCHRANA SOUKROMÍ 👇 */}
+              <Route path="/privacy" element={<PrivacyPage />} />
+
             </Routes>
           </div>
         </div>
