@@ -386,3 +386,268 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(128, 128, 128, 0.4) transparent;
 }
+
+/* === POPUP PROFILU A ODHLÁŠENÍ === */
+
+.sidebar-footer {
+  position: relative; /* Nutné pro správné umístění popupu */
+}
+
+/* Jemný efekt při najetí na profil */
+.user-profile {
+  transition: background-color 0.2s ease;
+  padding: 8px;
+  border-radius: 10px;
+  margin: -8px; /* Kompenzace paddingu */
+}
+
+.user-profile:hover {
+  background-color: var(--box-bg);
+}
+
+.user-popup {
+  position: absolute;
+  bottom: calc(100% + 15px); /* Umístí okno kousek nad profil */
+  left: 0;
+  width: 100%;
+  background-color: var(--nav-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  
+  /* Pěkná animace objevení */
+  animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.user-popup-email {
+  color: var(--text-color);
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 12px;
+  word-break: break-all;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.logout-btn {
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #ff4d4f;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+}
+
+/* === ÚPRAVA NÁZVU CHATU === */
+.history-title-input {
+  flex: 1;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--accent-color);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  margin-right: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.history-title-input:focus {
+  box-shadow: 0 0 5px rgba(0, 208, 132, 0.3);
+}
+
+/* === POPUP PRO SMAZÁNÍ CHATU === */
+
+.delete-modal-overlay {
+  position: fixed;
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Tmavé průhledné pozadí přes celou obrazovku */
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999; /* Musí být úplně nejvýš */
+  animation: fadeInOverlay 0.2s ease forwards;
+}
+
+.delete-modal-box {
+  background-color: var(--box-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 380px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  /* Animace poskočení jako u cookie banneru */
+  animation: popUpModal 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.delete-modal-box h4 {
+  margin: 0 0 15px 0;
+  color: var(--text-color);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.delete-modal-box p {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-cancel-delete, .btn-confirm-delete {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-delete {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-cancel-delete:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-color);
+}
+
+.btn-confirm-delete {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+}
+
+.btn-confirm-delete:hover {
+  background-color: #ff7875;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 77, 79, 0.3);
+}
+
+/* Animace */
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popUpModal {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.change-pwd-btn {
+  width: 100%; background: transparent; color: var(--text-color); border: 1px solid var(--border-color);
+  padding: 8px; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 0.9rem;
+}
+.change-pwd-btn:hover { background: rgba(255,255,255,0.05); }
+
+.password-input-small {
+  width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--accent-color);
+  background: var(--input-bg); color: white; margin-bottom: 8px; box-sizing: border-box;
+}
+.btn-save-pwd, .btn-cancel-pwd {
+  flex: 1; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; border: none;
+}
+.btn-save-pwd { background: var(--accent-color); color: black; font-weight: bold; }
+.btn-cancel-pwd { background: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
+
+.message-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.message-bubble {
+  max-width: 80%;
+  width: auto;
+  margin-bottom: 0px;
+  border-radius: 18px;
+}
+
+.user-row {
+  align-items: flex-end;
+}
+.user-bubble {
+  border-top-right-radius: 4px;
+}
+
+.bot-row {
+  align-items: flex-start;
+}
+.bot-bubble {
+  border-top-left-radius: 4px;
+}
+
+/* === ČASOVÁ ZNAČKA ZPRÁVY === */
+.message-time {
+  font-size: 0.7rem;
+  color: var(--text-color);
+  opacity: 0.5;
+  margin-top: -5px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.user-row .message-time {
+  text-align: right;
+  margin-right: 8px;
+}
+.bot-row .message-time {
+  text-align: left;
+  margin-left: 8px;
+}
+
+.date-separator {
+  text-align: center; /* Vystředí text (DNES, VČERA...) */
+  margin: 30px 0 20px 0; /* Vytvoří prostor nad a pod rozdělovačem */
+  width: 100%;
+  border-bottom: 1px solid var(--border-color); /* Vykreslí jemnou čáru přes celý chat */
+  padding-bottom: 10px; /* Udělá mezeru 10px mezi textem a čárou pod ním */
+}
+
+.date-separator span {
+  color: var(--text-color);
+  opacity: 0.6; /* Písmo bude poloprůhledné, aby nerušilo čtení zpráv */
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

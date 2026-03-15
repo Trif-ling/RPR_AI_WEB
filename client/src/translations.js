@@ -1,5 +1,3 @@
-// src/translations.js
-
 export const translations = {
   cz: {
     nav_about: "O nás",

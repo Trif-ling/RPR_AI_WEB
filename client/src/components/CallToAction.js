@@ -1,4 +1,3 @@
-// src/components/CallToAction.js
 import React from 'react';
 import './CallToAction.css';
 

@@ -15,6 +15,7 @@ import LoginPage from './components/LoginPage';
 import './index.css';
 import CookieBanner from './components/CookieBanner';
 import PrivacyPage from './components/PrivacyPage';
+import UpdatePasswordPage from './components/UpdatePasswordPage';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -121,11 +122,9 @@ function App() {
               } />
 
               <Route path="/chat" element={<ChatPage text={t} />} />
-              <Route path="/login" element={<LoginPage text={t} />} />
-              
-              {/* 👇 TADY JE TA PŘIDANÁ OCHRANA SOUKROMÍ 👇 */}
+              <Route path="/login" element={<LoginPage text={t} theme={theme} />} />
               <Route path="/privacy" element={<PrivacyPage />} />
-
+              <Route path="/update-password" element={<UpdatePasswordPage />} />
             </Routes>
           </div>
         </div>

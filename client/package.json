@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "18": "^0.0.0",
+    "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
     "@supabase/supabase-js": "^2.98.0",
