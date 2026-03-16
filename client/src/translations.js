@@ -16,10 +16,10 @@ export const translations = {
     about_box3: "Věříme, že skvělá technologie si zaslouží skvělý design. Každá animace a prvek jsou vytvořeny tak, aby byly intuitivní, responzivní a krásné.",
 
     stats_title: "STATISTIKA",
-    stats_users: "uživatelů měsíčně",
+    stats_users: "registrovaných uživatelů",
     stats_time: "prům. doba odezvy",
     stats_online: "online",
-    stats_satisfaction: "spokojenost",
+    //stats_satisfaction: "spokojenost",
 
     cta_title: "Pojďme vytvořit něco úžasného.",
     cta_text: "Náš model je připraven proměnit vaše nápady v realitu.",
@@ -75,10 +75,10 @@ export const translations = {
     about_box3: "We believe great technology deserves great design. Every animation and element is crafted to be intuitive, responsive, and beautiful.",
 
     stats_title: "STATISTICS",
-    stats_users: "users per month",
+    stats_users: "registered users",
     stats_time: "avg. response time",
     stats_online: "online",
-    stats_satisfaction: "satisfaction",
+    //stats_satisfaction: "satisfaction",
 
     cta_title: "Let's create something amazing.",
     cta_text: "Our model is ready to turn your ideas into reality.",

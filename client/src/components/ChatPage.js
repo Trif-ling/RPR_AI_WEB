@@ -6,6 +6,13 @@ import { Helmet } from 'react-helmet-async';
 import { supabase } from '../supabaseClient'; // IMPORT DATABÁZE
 import './ChatPage.css';
 
+// === DOSTUPNÉ AI MODELY ===
+const AVAILABLE_MODELS = [
+  { id: 'Llama-3.3 70B', name: 'LLaMA 3.3', supportsVision: false },
+  { id: 'Llama-4 Scout', name: 'LLaMA 4 Scout', supportsVision: true },
+  { id: 'GPT-OSS-120B', name: 'GPT OSS (Pro)', supportsVision: false }
+];
+
 // --- POMOCNÉ FUNKCE PRO ČAS A DATUM ---
 const formatDateSeparator = (dateObj) => {
   if (!dateObj) return '';
@@ -28,6 +35,7 @@ const BACKEND_URL = "http://localhost:3001";
 
 const ChatPage = ({ text = {} }) => {
   // --- STAVY UŽIVATELE A DATABÁZE ---
+  const [selectedModel, setSelectedModel] = useState(AVAILABLE_MODELS[0]);
   const [user, setUser] = useState(null);
   const [chatList, setChatList] = useState([]); // Seznam chatů v postranním panelu
   const navigate = useNavigate(); // Pro přesměrování
@@ -40,6 +48,9 @@ const ChatPage = ({ text = {} }) => {
   const [chatToDelete, setChatToDelete] = useState(null); // ID chatu, který čeká na potvrzení smazání
   const [editTitle, setEditTitle] = useState(""); // Nový text názvu
   const [activeChatId, setActiveChatId] = useState(null); // ID aktuálně otevřeného chatu
+  const [selectedFile, setSelectedFile] = useState(null); // Samotný fyzický soubor
+  const [previewUrl, setPreviewUrl] = useState(null); // Rychlý náhled pro uživatele
+  const fileInputRef = useRef(null); // Odkaz na neviditelné tlačítko pro výběr souboru
 
   // --- STAVY CHATU ---
   const defaultWelcomeMsg = { id: 1, sender: 'bot', text: text?.chat_welcome || "Ahoj! Jak ti mohu pomoci?", createdAt: new Date() };
@@ -182,29 +193,90 @@ const ChatPage = ({ text = {} }) => {
   };
 
   const renderMessageContent = (textMsg, sender) => {
-    if (sender === 'user') return textMsg;
     if (!textMsg) return null;
+    
     const rawHtml = marked.parse(textMsg);
     const cleanHtml = DOMPurify.sanitize(rawHtml);
-    return <div dangerouslySetInnerHTML={{ __html: cleanHtml }} />;
+    
+    return <div dangerouslySetInnerHTML={{ __html: cleanHtml }} className="markdown-content" />;
   };
 
+  // --- FUNKCE PRO PRÁCI S OBRÁZKY ---
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Bezpečnostní pojistka: max 5 MB
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Obrázek je příliš velký. Maximální velikost je 5 MB.");
+      return;
+    }
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file)); // Vytvoří bleskový náhled z disku
+    e.target.value = null; // Vyresetuje input, aby šel vybrat stejný soubor znovu
+  };
+
+  const removeSelectedFile = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+  };
+
+  // --- 4. HLAVNÍ LOGIKA: ODESLÁNÍ ZPRÁVY ---
   // --- 4. HLAVNÍ LOGIKA: ODESLÁNÍ ZPRÁVY A UKLÁDÁNÍ DO DB ---
   const handleSend = async (e) => {
     if (e) e.preventDefault();
-    if (!inputValue.trim() || isTyping) return;
+    
+    // ZMĚNA: Dovolíme odeslat, pokud je zadán text NEBO je vybrán obrázek
+    if ((!inputValue.trim() && !selectedFile) || isTyping) return;
 
     const userText = inputValue;
     setInputValue("");
-    setIsTyping(true);
+    setIsTyping(true); // Zamkne pole během nahrávání
     if (inputRef.current) inputRef.current.style.height = 'auto';
 
     let currentChatId = activeChatId;
+    let finalMessageContent = userText; // V základu je zpráva jen text
+
+    // === NOVÉ: NAHRÁNÍ OBRÁZKU DO SUPABASE ===
+    if (selectedFile) {
+      const fileExt = selectedFile.name.split('.').pop();
+      // Vytvoříme unikátní název (např. 167890123-abc.jpg)
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+      // 1. Nahrání fyzického souboru do našeho nového bucketu
+      const { error: uploadError } = await supabase.storage
+        .from('chat-images')
+        .upload(fileName, selectedFile);
+
+      if (uploadError) {
+        console.error("Chyba nahrávání obrázku:", uploadError);
+        alert("Obrázek se nepodařilo nahrát.");
+        setIsTyping(false);
+        return; // Zastavíme odesílání
+      }
+
+      // 2. Získání veřejné URL adresy obrázku
+      const { data: publicUrlData } = supabase.storage
+        .from('chat-images')
+        .getPublicUrl(fileName);
+
+      const imageUrl = publicUrlData.publicUrl;
+
+      // 3. Přidáme obrázek na konec textu ve formátu Markdown (![popis](url))
+      finalMessageContent = userText.trim() 
+        ? `${userText}\n\n![Příloha](${imageUrl})` 
+        : `![Příloha](${imageUrl})`;
+
+      // Úklid po úspěšném nahrání
+      removeSelectedFile();
+    }
 
     // A) Založení nového chatu v DB, pokud píšeme první zprávu
     if (!currentChatId && user) {
-      // Vytvoříme název chatu z prvních 30 znaků zprávy uživatele (jak jsi chtěl)
-      const title = userText.length > 30 ? userText.substring(0, 30) + '...' : userText;
+      // ZMĚNA: Pokud je zpráva jen obrázek, nazveme chat "Obrázek"
+      const titleText = userText.trim() ? userText : "Obrázek";
+      const title = titleText.length > 30 ? titleText.substring(0, 30) + '...' : titleText;
       
       const { data: newChat, error: chatError } = await supabase
         .from('chats')
@@ -218,11 +290,10 @@ const ChatPage = ({ text = {} }) => {
         // Přidáme nový chat hned na začátek seznamu v postranním panelu
         setChatList(prev => [newChat, ...prev]);
 
-
         await supabase.from('messages').insert({
           chat_id: currentChatId,
           sender: 'bot',
-          content: messages[0].text // Vezme přesný text aktuální uvítací zprávy z lokálního stavu
+          content: messages[0].text // Uvítací zpráva
         });
 
       } else {
@@ -235,12 +306,12 @@ const ChatPage = ({ text = {} }) => {
       await supabase.from('messages').insert({
         chat_id: currentChatId,
         sender: 'user',
-        content: userText
+        content: finalMessageContent
       });
     }
 
     // C) Okamžitá aktualizace UI pro uživatele
-    const newUserMsg = { id: Date.now(), sender: 'user', text: userText, createdAt: new Date() };
+    const newUserMsg = { id: Date.now(), sender: 'user', text: finalMessageContent, createdAt: new Date() };
     const historyToSend = [...messages, newUserMsg]; 
     setMessages(historyToSend);
 
@@ -251,7 +322,7 @@ const ChatPage = ({ text = {} }) => {
     let fullResponse = "";
 
     try {
-      // Komunikace s backendem (Groq)
+      // Komunikace s backendem (API)
       const response = await fetch(`${BACKEND_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -505,10 +576,12 @@ const ChatPage = ({ text = {} }) => {
 
           <div className="messages-area">
             {messages.map((msg, index) => {
-              // Logika: Zobrazit oddělovač data, pokud je to první zpráva, nebo se datum liší od předchozí zprávy
               let showDateSeparator = false;
+              
               if (index === 0) {
-                showDateSeparator = true;
+                if (messages.length > 1) {
+                  showDateSeparator = true;
+                }
               } else {
                 const prevMsg = messages[index - 1];
                 if (msg.createdAt && prevMsg.createdAt && msg.createdAt.toDateString() !== prevMsg.createdAt.toDateString()) {
@@ -543,21 +616,75 @@ const ChatPage = ({ text = {} }) => {
           </div>
 
           <form className="input-area" onSubmit={handleSend}>
-            <textarea
-              ref={inputRef}
-              placeholder={isTyping ? "..." : (text?.chat_placeholder || "Napište zprávu...")}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={isTyping}
-              autoFocus
-              rows={1}
+           <input 
+              type="file" 
+              accept="image/*" 
+              style={{ display: 'none' }} 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
             />
-            <button type="submit" className="send-btn" disabled={isTyping || !inputValue.trim()}>
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-              </svg>
-            </button>
+
+            <div className="chat-input-wrapper">
+              
+              <div className="input-tools-left">
+                <select 
+                  className="model-select-modern"
+                  value={selectedModel.id}
+                  onChange={(e) => {
+                    const model = AVAILABLE_MODELS.find(m => m.id === e.target.value);
+                    setSelectedModel(model);
+                  }}
+                  title="Vybrat AI model"
+                >
+                  {AVAILABLE_MODELS.map(m => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </select>
+
+                {/* Sponka s novým onClick */}
+                {selectedModel.supportsVision && (
+                  <button 
+                    type="button" 
+                    className="attach-btn" 
+                    title="Připojit obrázek"
+                    onClick={() => fileInputRef.current.click()}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                    </svg>
+                  </button>
+                )}
+              </div>
+
+              {/* === NÁHLED VYBRANÉHO OBRÁZKU NAD TEXTOVÝM POLEM === */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                
+                {previewUrl && (
+                  <div className="image-preview-container">
+                    <img src={previewUrl} alt="Náhled" className="image-preview-thumb" />
+                    <button type="button" className="remove-image-btn" onClick={removeSelectedFile}>×</button>
+                  </div>
+                )}
+
+                <textarea
+                  ref={inputRef}
+                  placeholder={isTyping ? "Nahrávám..." : (selectedModel.supportsVision ? "Napište zprávu nebo vložte obrázek..." : (text?.chat_placeholder || "Napište zprávu..."))}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={isTyping}
+                  autoFocus
+                  rows={1}
+                  className="chat-textarea"
+                />
+              </div>
+              
+              <button type="submit" className="send-btn" disabled={isTyping || (!inputValue.trim() && !selectedFile)}>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                </svg>
+              </button>
+            </div>
           </form>
 
         </div>

@@ -13,7 +13,7 @@ function LoginPage({ text = {}, theme}) {
   const [resetMsg, setResetMsg] = useState('');
   const [captchaToken, setCaptchaToken] = useState(null);
   
-  // Stavy pro formulář
+  // Stavy pro formulář 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
