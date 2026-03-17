@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 // Import komponent
 import Navbar from './components/Navbar';
@@ -37,6 +39,13 @@ function App() {
   const [bubblePos, setBubblePos] = useState({ x: 0, y: 0 });
 
   const t = translations[language];
+  useEffect(() => {
+    AOS.init({
+      duration: 800,   // Délka animace v milisekundách (0.8 sekundy)
+      once: true,      // Animace proběhne jen jednou (nevyjede znovu, když scrolluješ nahoru a zpět dolů)
+      offset: 100,     // Animace začne, když je prvek 100px nad spodním okrajem monitoru
+    });
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
