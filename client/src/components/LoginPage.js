@@ -54,6 +54,7 @@ function LoginPage({ text = {}, theme}) {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: email,
           password: password,
+          options: { captchaToken: captchaToken }
         });
 
         if (error) throw error;
@@ -215,17 +216,14 @@ function LoginPage({ text = {}, theme}) {
                   </span>
                 </div>
               )}
-
-              {!isLogin && (
-                <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0 10px 0' }}>
-                  <HCaptcha
-                    sitekey="10000000-ffff-ffff-ffff-000000000001" // Oficiální testovací klíč
-                    theme={theme}
-                    onVerify={(token) => setCaptchaToken(token)}
-                    onExpire={() => setCaptchaToken(null)} // Kdyby to trvalo moc dlouho
+              <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0 10px 0' }}>
+                <HCaptcha
+                  sitekey="10000000-ffff-ffff-ffff-000000000001" // Oficiální testovací klíč
+                  theme={theme}
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onExpire={() => setCaptchaToken(null)} // Kdyby to trvalo moc dlouho
                   />
-                </div>
-              )}
+              </div>
 
               <button type="submit" className="submit-btn-glow" disabled={loading}>
                 {loading ? "Načítám..." : (isLogin ? text.loginBtnLog : text.loginBtnReg)}

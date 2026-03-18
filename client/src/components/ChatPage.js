@@ -8,9 +8,9 @@ import './ChatPage.css';
 
 // === DOSTUPNÉ AI MODELY ===
 const AVAILABLE_MODELS = [
-  { id: 'Llama-3.3 70B', name: 'LLaMA 3.3', supportsVision: false },
-  { id: 'Llama-4 Scout', name: 'LLaMA 4 Scout', supportsVision: true },
-  { id: 'GPT-OSS-120B', name: 'GPT OSS (Pro)', supportsVision: false }
+  { id: 'llama-3.3-70b-versatile', name: 'LLaMA 3.3', supportsVision: false },
+  { id: 'meta-llama/llama-4-scout-17b-16e-instruct', name: 'LLaMA 4 Scout', supportsVision: true },
+  { id: 'openai/gpt-oss-120b', name: 'GPT OSS (Pro)', supportsVision: false }
 ];
 
 // --- POMOCNÉ FUNKCE PRO ČAS A DATUM ---
@@ -182,14 +182,50 @@ const ChatPage = ({ text = {} }) => {
   };
   useEffect(() => { adjustTextareaHeight(); }, [inputValue]);
 
-  const prepareHistory = (currentMessages) => {
-    // Odstraníme úvodní zprávu a prázdné zprávy, abychom nepletli model
-    return currentMessages
+const prepareHistory = (currentMessages, currentModel) => {
+    const prepared = currentMessages
       .filter(msg => msg.id !== 1 && msg.text.trim() !== '') 
-      .map(msg => ({
-        role: msg.sender === 'bot' ? 'assistant' : 'user',
-        content: msg.text
-      }));
+      .map(msg => {
+        const role = msg.sender === 'bot' ? 'assistant' : 'user';
+        
+        // Hledáme Markdown obrázek
+        const imgRegex = /!\[.*?\]\((.*?)\)/;
+        const match = msg.text.match(imgRegex);
+
+        // Pokud to je zpráva od uživatele, našli jsme obrázek A model umí vidět
+        if (role === 'user' && match && currentModel.supportsVision) {
+          const imageUrl = match[1];
+          const textWithoutImg = msg.text.replace(imgRegex, '').trim();
+
+          return {
+            role: role,
+            content: [
+              { type: "text", text: textWithoutImg || "Prosím, popiš detailně, co vidíš na tomto obrázku." },
+              { type: "image_url", image_url: { url: imageUrl } }
+            ]
+          };
+        }
+
+        // Běžná textová zpráva
+        return {
+          role: role,
+          content: msg.text
+        };
+      });
+
+    // === LÉK NA SLEPOTU LLAMA MODELŮ ===
+    // Pokud má model oči, přidáme mu na úplný začátek konverzace neviditelný příkaz
+    if (currentModel.supportsVision) {
+      prepared.unshift({
+        role: "system",
+        content: "You are a highly capable multimodal AI. You CAN see images and analyze them. Always describe and analyze any image provided to you in detail. Never say you cannot see images."
+      });
+    }
+
+    // KONTROLA: Tímto se podíváme, jestli to děláme správně (zmáčkni F12 v prohlížeči)
+    console.log("ODESÍLANÁ HISTORIE DO BACKENDU:", prepared);
+
+    return prepared;
   };
 
   const renderMessageContent = (textMsg, sender) => {
@@ -222,7 +258,6 @@ const ChatPage = ({ text = {} }) => {
     setPreviewUrl(null);
   };
 
-  // --- 4. HLAVNÍ LOGIKA: ODESLÁNÍ ZPRÁVY ---
   // --- 4. HLAVNÍ LOGIKA: ODESLÁNÍ ZPRÁVY A UKLÁDÁNÍ DO DB ---
   const handleSend = async (e) => {
     if (e) e.preventDefault();
@@ -322,11 +357,16 @@ const ChatPage = ({ text = {} }) => {
     let fullResponse = "";
 
     try {
-      // Komunikace s backendem (API)
+      console.log("Odesílám na server! Vybraný model je:", selectedModel.id);
+
+      // 2. Komunikace s backendem (API)
       const response = await fetch(`${BACKEND_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ history: prepareHistory(historyToSend) })
+        body: JSON.stringify({ 
+          history: prepareHistory(historyToSend, selectedModel),
+          modelId: selectedModel.id
+        })
       });
 
       if (!response.ok) {

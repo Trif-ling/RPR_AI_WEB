@@ -31,8 +31,7 @@ const chatLimiter = rateLimit({
 });
 
 app.post('/chat', chatLimiter, async (req, res) => {
-    const { history } = req.body;
-
+    const { history, modelId } = req.body;
     // Nastavení hlaviček pro streamování
     res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
     res.setHeader('Transfer-Encoding', 'chunked');
@@ -42,9 +41,12 @@ app.post('/chat', chatLimiter, async (req, res) => {
     res.flushHeaders();
 
     try {
+        const modelToUse = modelId ? modelId : "llama-3.3-70b-versatile";
+        console.log("2. Reálně odesílám do Groqu model:", modelToUse);
+
         const stream = await groq.chat.completions.create({
             messages: history,
-            model: "llama-3.3-70b-versatile",
+            model: modelToUse,
             temperature: 0.7,
             max_tokens: 1024,
             stream: true,
@@ -58,7 +60,8 @@ app.post('/chat', chatLimiter, async (req, res) => {
         }
 
         res.end();
-
+        console.log("3. Zpráva úspěšně odeslána uživateli.");
+        
     } catch (error) {
         console.error('Groq API Error:', error);
         res.write(`\n[CHYBA SERVERU: ${error.message}]`);
