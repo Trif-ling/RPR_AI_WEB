@@ -132,7 +132,7 @@ function App() {
 
               <Route path="/chat" element={<ChatPage text={t} />} />
               <Route path="/login" element={<LoginPage text={t} theme={theme} />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/privacy" element={<PrivacyPage text={t} />} />
               <Route path="/update-password" element={<UpdatePasswordPage />} />
             </Routes>
           </div>

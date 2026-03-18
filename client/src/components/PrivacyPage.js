@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from './Footer';
 
-function PrivacyPage() {
+function PrivacyPage({ text = {} }) {
   return (
     <div className="page-container" style={{ paddingTop: '150px', minHeight: '100vh' }}>
       
@@ -67,7 +67,7 @@ function PrivacyPage() {
         </div>
       </div>
 
-      <Footer />
+      <Footer text={text} />
     </div>
   );
 }

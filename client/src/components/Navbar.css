@@ -177,7 +177,7 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
     width: 100%;
     justify-content: space-between; 
     padding-top: 10px;
-    border-top: 1px solid rgba(128,128,128, 0.1);
+    border-top: 1px solid rgba(187, 28, 28, 0.1);
   }
   
   .navbar-links a {
@@ -196,7 +196,7 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
 .navbar select {
   background-color: transparent;       /* Průhledné pozadí tlačítka */
   color: var(--text-color);            /* Barva textu podle režimu */
-  border: 1px solid var(--text-color); /* Rámeček podle textu */
+  border: 2px solid var(--text-color); /* Rámeček podle textu */
   border-radius: 20px;                 /* Kulaté rohy */
   padding: 5px 10px;
   cursor: pointer;
@@ -215,4 +215,27 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
   background-color: var(--bg-color);   /* Pozadí možností (Černá v noci, Bílá ve dne) */
   color: var(--text-color);            /* Text možností */
   padding: 10px;
+  border-radius: 2em;
+}
+
+/* === TLAČÍTKO PŘIHLÁSIT SE V NAVBARU === */
+.nav-login-btn {
+  display: inline-block;
+  padding: 8px 24px;
+  background-color: transparent;
+  border: 2px solid var(--accent-color); /* Tvůj zelený rámeček */
+  border-radius: 30px; /* Moderní tvar "pilulky" */
+  color: var(--text-color); /* Barva textu se přizpůsobí světlý/tmavý režim */
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s ease; /* Plynulá animace všech změn */
+}
+
+/* Efekt při najetí myší */
+.nav-login-btn:hover {
+  background-color: var(--accent-color); /* Vyplní se zeleně */
+  color: #000000; /* Text zčerná pro maximální čitelnost a kontrast */
+  box-shadow: 0 0 15px rgba(0, 255, 127, 0.4); /* Jemná neonová záře do okolí */
+  transform: translateY(-2px); /* Lehounce se nadzvedne */
 }

@@ -69,6 +69,10 @@ function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentTh
           </select>
           <span className="arrow-down">▼</span>
         </div>
+
+       <Link to="/login" className="nav-login-btn">
+      {text.nav_login}
+    </Link>
       </div>
     </nav>
   );

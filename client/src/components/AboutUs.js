@@ -1,49 +1,47 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import './AboutUs.css';
 
-function AboutUs() {
-  const [isVisible, setIsVisible] = useState(false);
-  const domRef = useRef();
-
-  useEffect(() => {
-    // Sledovač, který zjistí, jestli už je komponenta na obrazovce
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setIsVisible(true); // Zapne animaci
-        }
-      });
-    }, { threshold: 0.2 }); // Animace se spustí, když je vidět alespoň 20% sekce
-    
-    if (domRef.current) {
-      observer.observe(domRef.current);
-    }
-    
-    return () => {
-      if (domRef.current) observer.unobserve(domRef.current);
-    };
-  }, []);
-
+function AboutUs({ text = {} }) {
   return (
-    // Třída "is-visible" se přidá dynamicky, až se sem doscrolluje
-    <section 
-      className={`about-section ${isVisible ? 'is-visible' : ''}`} 
-      ref={domRef}
-      id="about"
-    >
-      <h2>O NÁS</h2>
-      <div className="about-content">
-        <p>
-          Jsme tým zapálených studentů, kteří věří, že umělá inteligence by měla být dostupná, 
-          rychlá a intuitivní pro každého. Projekt JuNoMi vznikl z touhy posouvat hranice 
-          toho, co dokážeme s moderními technologiemi vytvořit.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, 
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-          fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-        </p>
+    <section id="about" className="about-section">
+      <div className="about-container">
+        
+        <h2 className="section-title">{text.about_title}</h2>
+        <div className="underline"></div>
+        
+        <div className="about-content-wrapper">
+          <div className="about-text-side">
+            <p className="about-description">{text.about_text}</p>
+            
+            <div className="team-grid-modern">
+              <div className="team-card-modern">
+                <div className="card-dot"></div>
+                <h3>Daniel Milota</h3>
+                <p>Frontend Developer</p>
+              </div>
+              <div className="team-card-modern">
+                <div className="card-dot"></div>
+                <h3>Ondřej Juhás</h3>
+                <p>Backend Developer</p>
+              </div>
+              <div className="team-card-modern">
+                <div className="card-dot"></div>
+                <h3>Filip Novotný</h3>
+                <p>Manager & Designer</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="about-image-side">
+            <div className="image-border-effect">
+              <img 
+                src="https://placehold.co/600x400/1a1a1a/00ff7f?text=Nas+Tym" 
+                alt="JuNoMi Team" 
+              />
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );

@@ -90,6 +90,10 @@ function Statistics({ text = {} }) {
   return (
     <section className="statistics-section" id="statistics" ref={sectionRef}>
       <h2>{text.stats_title}</h2>
+      
+      {/* 👈 TADY JE TVÁ NOVÁ ZELENÁ ČÁRA */}
+      <div className="underline"></div> 
+      
       <div className="statistics-container">
         
         <div className="stat-item">

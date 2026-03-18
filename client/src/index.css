@@ -41,6 +41,7 @@ html, body {
 }
 
 /* === APLIKACE BAREV PODLE REŽIMU === */
+/* === APLIKACE BAREV PODLE REŽIMU === */
 body.dark-mode {
   --bg-color: var(--bg-color-dark);
   --text-color: var(--text-color-dark);
@@ -51,6 +52,11 @@ body.dark-mode {
   
   background-color: var(--bg-color);
   color: var(--text-color);
+
+  /* 👇 NOVÉ: Zelená záře shora (Spotlight) */
+  background-image: radial-gradient(circle at 50% -20%, rgba(0, 208, 132, 0.12) 0%, transparent 60%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 body.light-mode {
@@ -112,4 +118,20 @@ h1, h2, h3, h4, p, span, a, button, input, textarea, section, div, aside {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* === GLOBÁLNÍ ZELENÁ ČÁRA POD NADPISY === */
+.underline {
+  width: 80px;            /* Délka čáry (klidně si uprav) */
+  height: 4px;            /* Tloušťka čáry */
+  background-color: var(--accent-color); /* Tvoje hlavní zelená barva */
+  margin: -20px auto 45px auto; /* Vycentrování: nahoře 15px mezera, dole 40px */
+  border-radius: 2px;     /* Lehce zakulacené konce */
+}
+
+body.dark-mode .App {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
 }

@@ -247,32 +247,36 @@
 }
 
 .message-bubble {
-  padding: 12px 18px;
-  border-radius: 18px;
-  font-size: 1rem;
-  line-height: 1.6;
-  position: relative;
+ padding: 10px 14px; 
+  border-radius: 16px; 
+  font-size: 0.95rem; 
+  line-height: 1.5;
   
-  /* Pro dlouhé texty */
+  
+  max-width: 65%; 
+  width: fit-content; 
+  
+  position: relative;
   word-wrap: break-word;      
   overflow-wrap: break-word;  
   word-break: break-word;      
-
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 2px; /* Aby na sebe zprávy hezky navazovaly */
 }
 
 .bot-bubble {
   background-color: var(--box-bg);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  border-bottom-left-radius: 4px; 
+  border-bottom-left-radius: 4px;
 }
 
 .user-bubble {
-  background-color: var(--accent-color); 
+ background-color: var(--accent-color); 
   color: #000; 
   font-weight: 500;
-  border-bottom-right-radius: 4px; 
+  /* "Ocas" bubliny směřující doprava */
+  border-bottom-right-radius: 4px;
 }
 
 /* Vstupní oblast */

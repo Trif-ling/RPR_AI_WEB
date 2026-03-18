@@ -91,3 +91,24 @@
   .hero-buttons { flex-direction: column; width: 100%; }
   .btn-primary, .btn-secondary { width: 100%; box-sizing: border-box; }
 }
+
+
+.hero-3d-container {
+  position: absolute;
+  top: 50%;
+  right: 2%;
+  transform: translateY(-40%); /* Vycentrování vertikálně */
+  width: 55vw;
+  height: 85vh;
+  max-width: 900px;
+  z-index: 1;
+  pointer-events: auto; /* Povolí otáčení modelu myší */
+}
+
+/* Pokud by model překrýval text na menších noteboocích */
+@media (max-width: 1200px) {
+  .hero-3d-container {
+    width: 45vw;
+    right: 0;
+  }
+}
