@@ -13,6 +13,28 @@ const AVAILABLE_MODELS = [
   { id: 'openai/gpt-oss-120b', name: 'GPT OSS (Pro)', supportsVision: false }
 ];
 
+// === LIMITY ZPRÁV (na 30 minut) ===
+const RATE_LIMITS = {
+  logged_in: {
+    'llama-3.3-70b-versatile': 40,
+    'meta-llama/llama-4-scout-17b-16e-instruct': 15,
+    'openai/gpt-oss-120b': 30
+  },
+  guest: {
+    'llama-3.3-70b-versatile': 20,
+    'meta-llama/llama-4-scout-17b-16e-instruct': 5,
+    'openai/gpt-oss-120b': 15
+  }
+};
+const LIMIT_WINDOW_MS = 30 * 60 * 1000; // 30 minut v milisekundách
+
+// === LIMITY OBRÁZKŮ (na 24 hodin) ===
+const IMAGE_LIMITS = {
+  logged_in: 5,
+  guest: 3
+};
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
 // --- POMOCNÉ FUNKCE PRO ČAS A DATUM ---
 const formatDateSeparator = (dateObj) => {
   if (!dateObj) return '';
@@ -60,6 +82,7 @@ const ChatPage = ({ text = {} }) => {
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const textareaRef = useRef(null);
 
   // --- 1. ZÍSKÁNÍ PŘIHLÁŠENÉHO UŽIVATELE A JEHO JMÉNA ---
   useEffect(() => {
@@ -84,7 +107,7 @@ const ChatPage = ({ text = {} }) => {
       }
     };
     fetchUser();
-  }, []);
+  }, []); // Přidáno inputValue jako závislost pro aktualizaci jména po změně
 
   const handleUpdatePassword = async () => {
     if (newPassword.length < 6) {
@@ -242,6 +265,20 @@ const prepareHistory = (currentMessages, currentModel) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const imageLimitCheck = checkImageLimit();
+    if (!imageLimitCheck.allowed) {
+      const warningMsg = { 
+        id: Date.now(), 
+        sender: 'bot', 
+        text: `🖼️ **Dosažen limit pro obrázky**\n\nVyčerpali jste svůj denní limit pro analýzu obrázků. Další obrázek můžete nahrát za **${imageLimitCheck.waitText}**.${!user ? '\n\n*Tip: Zaregistrujte se a získejte 5 obrázků denně místo 3!*' : ''}`, 
+        createdAt: new Date() 
+      };
+      setMessages(prev => [...prev, warningMsg]);
+      scrollToBottom();
+      e.target.value = null; // Vyčistí input, aby nešel obrázek poslat
+      return; // Zastaví funkci
+    }
+
     // Bezpečnostní pojistka: max 5 MB
     if (file.size > 5 * 1024 * 1024) {
       alert("Obrázek je příliš velký. Maximální velikost je 5 MB.");
@@ -258,12 +295,99 @@ const prepareHistory = (currentMessages, currentModel) => {
     setPreviewUrl(null);
   };
 
+  // --- FUNKCE PRO KONTROLU LIMITŮ ---
+  const checkRateLimit = (modelId) => {
+    // Zjistíme, jestli je uživatel přihlášený (použijeme proměnnou 'user')
+    const userType = user ? 'logged_in' : 'guest';
+    const limit = RATE_LIMITS[userType][modelId];
+    
+    // Klíč, pod kterým si to pamatuje prohlížeč (např. "usage_guest_llama-3.3")
+    const storageKey = `usage_${userType}_${modelId}`;
+
+    // Načteme historii časů, kdy uživatel odeslal zprávu
+    let usageHistory = JSON.parse(localStorage.getItem(storageKey)) || [];
+    const now = Date.now();
+
+    // Promažeme staré zprávy (necháme jen ty za posledních 30 minut)
+    usageHistory = usageHistory.filter(timestamp => now - timestamp < LIMIT_WINDOW_MS);
+    localStorage.setItem(storageKey, JSON.stringify(usageHistory));
+
+    // Pokud je počet zpráv větší nebo roven limitu, nepustíme ho dál
+    if (usageHistory.length >= limit) {
+      const oldestMsg = usageHistory[0]; // Nejstarší zpráva z těch čerstvých
+      const waitTimeMs = LIMIT_WINDOW_MS - (now - oldestMsg);
+      const waitMinutes = Math.ceil(waitTimeMs / 60000); // Převod na minuty nahoru
+      return { allowed: false, waitMinutes };
+    }
+
+    return { allowed: true };
+  };
+  
+
+  const recordMessageUsage = (modelId) => {
+    const userType = user ? 'logged_in' : 'guest';
+    const storageKey = `usage_${userType}_${modelId}`;
+    let usageHistory = JSON.parse(localStorage.getItem(storageKey)) || [];
+    usageHistory.push(Date.now()); // Zápis aktuálního času
+    localStorage.setItem(storageKey, JSON.stringify(usageHistory));
+  };
+
+  // --- FUNKCE PRO KONTROLU LIMITU OBRÁZKŮ ---
+  const checkImageLimit = () => {
+    const userType = user ? 'logged_in' : 'guest';
+    const limit = IMAGE_LIMITS[userType];
+    const storageKey = `image_usage_${userType}`;
+
+    let usageHistory = JSON.parse(localStorage.getItem(storageKey)) || [];
+    const now = Date.now();
+
+    // Vyfiltrujeme jen obrázky poslané za posledních 24 hodin
+    usageHistory = usageHistory.filter(timestamp => now - timestamp < DAY_IN_MS);
+    localStorage.setItem(storageKey, JSON.stringify(usageHistory));
+
+    // Pokud je dosažen limit, spočítáme čas do dalšího uvolnění
+    if (usageHistory.length >= limit) {
+      const oldestMsg = usageHistory[0];
+      const waitTimeMs = DAY_IN_MS - (now - oldestMsg);
+      const waitHours = Math.floor(waitTimeMs / (1000 * 60 * 60));
+      const waitMinutes = Math.ceil((waitTimeMs % (1000 * 60 * 60)) / 60000);
+      
+      const waitText = waitHours > 0 ? `${waitHours}h a ${waitMinutes}m` : `${waitMinutes} minut`;
+      
+      return { allowed: false, waitText };
+    }
+
+    return { allowed: true };
+  };
+
+  const recordImageUsage = () => {
+    const userType = user ? 'logged_in' : 'guest';
+    const storageKey = `image_usage_${userType}`;
+    let usageHistory = JSON.parse(localStorage.getItem(storageKey)) || [];
+    usageHistory.push(Date.now());
+    localStorage.setItem(storageKey, JSON.stringify(usageHistory));
+  };
+
   // --- 4. HLAVNÍ LOGIKA: ODESLÁNÍ ZPRÁVY A UKLÁDÁNÍ DO DB ---
   const handleSend = async (e) => {
     if (e) e.preventDefault();
     
     // ZMĚNA: Dovolíme odeslat, pokud je zadán text NEBO je vybrán obrázek
     if ((!inputValue.trim() && !selectedFile) || isTyping) return;
+
+    const limitCheck = checkRateLimit(selectedModel.id);
+    if (!limitCheck.allowed) {
+      // Místo otravného vyskakovacího okna pošleme uživateli hezkou zprávu přímo do chatu
+      const warningMsg = { 
+        id: Date.now(), 
+        sender: 'bot', 
+        text: `**Dosažen limit zpráv**\n\nVyčerpali jste limit pro model **${selectedModel.name}**. Můžete poslat další zprávu za **${limitCheck.waitMinutes} minut**, nebo vlevo dole přepnout na jiný model.${!user ? '\n\n*Tip: Přihlášení uživatelé mají limity dvojnásobné!*' : ''}`, 
+        createdAt: new Date() 
+      };
+      setMessages(prev => [...prev, warningMsg]);
+      scrollToBottom();
+      return; // Zastavíme odesílání
+    }
 
     const userText = inputValue;
     setInputValue("");
@@ -302,6 +426,8 @@ const prepareHistory = (currentMessages, currentModel) => {
       finalMessageContent = userText.trim() 
         ? `${userText}\n\n![Příloha](${imageUrl})` 
         : `![Příloha](${imageUrl})`;
+      
+      recordImageUsage();
 
       // Úklid po úspěšném nahrání
       removeSelectedFile();
@@ -357,8 +483,7 @@ const prepareHistory = (currentMessages, currentModel) => {
     let fullResponse = "";
 
     try {
-      console.log("Odesílám na server! Vybraný model je:", selectedModel.id);
-
+      recordMessageUsage(selectedModel.id);
       // 2. Komunikace s backendem (API)
       const response = await fetch(`${BACKEND_URL}/chat`, {
         method: 'POST',
@@ -368,6 +493,10 @@ const prepareHistory = (currentMessages, currentModel) => {
           modelId: selectedModel.id
         })
       });
+
+      if (response.status === 429) {
+        throw new Error("Ochranný systém serveru: Příliš mnoho požadavků. Chvíli počkejte.");
+      }
 
       if (!response.ok) {
         throw new Error(`Chyba serveru: ${response.status}`);
@@ -656,7 +785,7 @@ const prepareHistory = (currentMessages, currentModel) => {
           </div>
 
           <form className="input-area" onSubmit={handleSend}>
-           <input 
+            <input 
               type="file" 
               accept="image/*" 
               style={{ display: 'none' }} 
@@ -666,6 +795,7 @@ const prepareHistory = (currentMessages, currentModel) => {
 
             <div className="chat-input-wrapper">
               
+              {/* --- LEVÁ ČÁST (Model + Sponka) --- */}
               <div className="input-tools-left">
                 <select 
                   className="model-select-modern"
@@ -681,7 +811,6 @@ const prepareHistory = (currentMessages, currentModel) => {
                   ))}
                 </select>
 
-                {/* Sponka s novým onClick */}
                 {selectedModel.supportsVision && (
                   <button 
                     type="button" 
@@ -696,9 +825,8 @@ const prepareHistory = (currentMessages, currentModel) => {
                 )}
               </div>
 
-              {/* === NÁHLED VYBRANÉHO OBRÁZKU NAD TEXTOVÝM POLEM === */}
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                
+              {/* --- STŘEDNÍ ČÁST (Náhled obrázku + Textové pole) --- */}
+              <div className="textarea-container">
                 {previewUrl && (
                   <div className="image-preview-container">
                     <img src={previewUrl} alt="Náhled" className="image-preview-thumb" />
@@ -719,11 +847,13 @@ const prepareHistory = (currentMessages, currentModel) => {
                 />
               </div>
               
+              {/* --- PRAVÁ ČÁST (Odesílací tlačítko) --- */}
               <button type="submit" className="send-btn" disabled={isTyping || (!inputValue.trim() && !selectedFile)}>
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
                 </svg>
               </button>
+
             </div>
           </form>
 

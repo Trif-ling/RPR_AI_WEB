@@ -1,8 +1,11 @@
 import React from 'react';
 import '@google/model-viewer'; 
 import './Hero.css';
+import { useNavigate } from 'react-router-dom';
 
 function Hero({ text }) {
+  const navigate = useNavigate();
+  
   return (
     <section className="hero-section">
       <div className="hero-content">
@@ -14,13 +17,13 @@ function Hero({ text }) {
         {/* Ostatní popisky a tlačítka nech jak jsou... */}
         <p className="hero-description">{text.hero_desc1}</p>
         <div className="hero-buttons">
-           <button className="btn-primary">{text.hero_btn_login}</button>
-           <button className="btn-secondary">{text.hero_btn_try}</button>
+           <button className="btn-primary" onClick={() => navigate('/login')}>{text.hero_btn_login}</button>
+           <button className="btn-secondary" onClick={() => navigate('/chat')}>{text.hero_btn_try}</button>
         </div>
       </div>
 
       <div className="hero-3d-container">
-        {/* 👇 ZŮSTANE JEN TENTO 3D MODEL, ŽÁDNÝ <img /> TAG VEDLE NĚJ! */}
+        {/* ZŮSTANE JEN TENTO 3D MODEL, ŽÁDNÝ <img /> TAG VEDLE NĚJ! */}
         <model-viewer
           src="/models/samurai.glb" 
           alt="3D Samurai Model"

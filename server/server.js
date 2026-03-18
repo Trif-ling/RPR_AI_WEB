@@ -19,15 +19,16 @@ app.use(cors());
 app.use(express.json());
 
 const chatLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // Časové okno: 15 minut
-    max: 15, // 15 požadavků za 15 minut z jedné IP adresy
+    windowMs: 30 * 60 * 1000,
+    max: 50,
     standardHeaders: true,
     legacyHeaders: false,
-    message: async (request, response) => {
-        response.status(429).json({
-            error: "Limit zpráv překročen. Zkuste to prosím za 15 minut znovu.",
+    handler: (req, res) => {
+        // Pokud někdo obelstí frontend, tady narazí
+        res.status(429).json({
+            error: "Bezpečnostní limit serveru překročen. Zkuste to prosím za 30 minut."
         });
-    },
+    }
 });
 
 app.post('/chat', chatLimiter, async (req, res) => {
@@ -35,14 +36,13 @@ app.post('/chat', chatLimiter, async (req, res) => {
     // Nastavení hlaviček pro streamování
     res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
     res.setHeader('Transfer-Encoding', 'chunked');
-    res.setHeader('Connection', 'keep-alive'); // Doporučeno pro stabilní stream
+    res.setHeader('Connection', 'keep-alive');
     res.setHeader('Cache-Control', 'no-cache, no-transform'); 
     res.setHeader('X-Accel-Buffering', 'no'); 
     res.flushHeaders();
 
     try {
         const modelToUse = modelId ? modelId : "llama-3.3-70b-versatile";
-        console.log("2. Reálně odesílám do Groqu model:", modelToUse);
 
         const stream = await groq.chat.completions.create({
             messages: history,
@@ -60,7 +60,6 @@ app.post('/chat', chatLimiter, async (req, res) => {
         }
 
         res.end();
-        console.log("3. Zpráva úspěšně odeslána uživateli.");
         
     } catch (error) {
         console.error('Groq API Error:', error);

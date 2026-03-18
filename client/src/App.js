@@ -18,6 +18,7 @@ import './index.css';
 import CookieBanner from './components/CookieBanner';
 import PrivacyPage from './components/PrivacyPage';
 import UpdatePasswordPage from './components/UpdatePasswordPage';
+import NotFoundPage from './components/NotFoundPage';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -134,6 +135,7 @@ function App() {
               <Route path="/login" element={<LoginPage text={t} theme={theme} />} />
               <Route path="/privacy" element={<PrivacyPage text={t} />} />
               <Route path="/update-password" element={<UpdatePasswordPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </div>
         </div>
