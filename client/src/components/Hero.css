@@ -1,32 +1,31 @@
-/* src/components/Hero.css */
 .hero-section {
-  min-height: 100vh; /* ZABERE CELOU VÝŠKU OBRAZOVKY */
+  min-height: 100vh;
   display: flex;
-  align-items: center; /* Vycentruje obsah vertikálně */
-  padding: 0 5%;
+  align-items: center; 
+  padding: 120px 5% 40px 5%;
   position: relative;
   box-sizing: border-box;
 }
 
 .hero-content {
-  max-width: 55%; /* Udržuje text vlevo, aby zbylo místo pro robota vpravo */
+  max-width: 55%;
   display: flex;
   flex-direction: column;
   gap: 20px;
   z-index: 2;
-  margin-top: -50px; /* Lehký posun nahoru pro lepší vizuál */
 }
 
 .hero-section h1 {
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 5vw, 3.5rem); 
   font-weight: 800;
   margin: 0;
   line-height: 1.1;
   color: var(--text-color);
+  overflow-wrap: break-word;
 }
 
 .hero-subtitle {
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
   color: var(--accent-color);
   margin: 0;
 }
@@ -79,54 +78,10 @@
   border-color: var(--accent-color);
 }
 
-/* Mobilní zobrazení */
-@media (max-width: 768px) {
-  .hero-content { 
-    max-width: 100%; 
-    text-align: center; 
-    align-items: center; 
-    padding-top: 100px;
-  }
-  .hero-section h1 { font-size: 2.5rem; }
-  .hero-buttons { flex-direction: column; width: 100%; }
-  .btn-primary, .btn-secondary { width: 100%; box-sizing: border-box; }
-}
-
-
 .hero-3d-container {
   position: absolute;
   top: 50%;
-  right: 2%;
-  transform: translateY(-40%); /* Vycentrování vertikálně */
-  width: 55vw;
-  height: 85vh;
-  max-width: 900px;
-  z-index: 1;
-  pointer-events: auto; /* Povolí otáčení modelu myší */
-}
-
-/* Pokud by model překrýval text na menších noteboocích */
-@media (max-width: 1200px) {
-  .hero-3d-container {
-    width: 45vw;
-    right: 0;
-  }
-}
-
-
-
-/* === ANIMACE LEVITACE === */
-@keyframes floatHologram {
-  0% { transform: translateY(-40%); }
-  50% { transform: translateY(-44%); } /* Vyjede lehce nahoru */
-  100% { transform: translateY(-40%); }
-}
-
-.hero-3d-container {
-  position: absolute;
-  top: 50%;
-  /* 👇 TADY JSME HO POSUNULI VÍC DOPRAVA (původně bylo 2%, teď je nalepený na kraji, klidně dej i -5% pokud ho chceš ještě víc ven) */
-  right: -7%; 
+  right: 0%; 
   transform: translateY(-40%);
   width: 55vw;
   height: 85vh;
@@ -136,10 +91,41 @@
   animation: floatHologram 6s ease-in-out infinite;
 }
 
-/* === SKRYTÍ SAMURAJE NA MENŠÍCH MONITORECH A MOBILECH === */
-/* 992px je ideální zlom – schová se, jakmile přejdeš z PC na tablet nebo mobil */
+/* === ANIMACE LEVITACE === */
+@keyframes floatHologram {
+  0% { transform: translateY(-40%); }
+  50% { transform: translateY(-44%); }
+  100% { transform: translateY(-40%); }
+}
+
+/* === RESPONZIVITA === */
+
+/* 1. ZLOM (Tablety a menší PC: pod 992px) */
 @media (max-width: 992px) {
   .hero-3d-container {
     display: none !important;
+  }
+  
+  .hero-content { 
+    max-width: 100%; 
+    text-align: center; 
+    align-items: center; 
+  }
+}
+
+/* 2. ZLOM (Mobily: pod 768px) */
+@media (max-width: 768px) {
+  .hero-content { 
+    padding: 10px 20px 40px 20px;
+  }
+  
+  .hero-buttons { 
+    flex-direction: column; 
+    width: 100%; 
+  }
+  
+  .btn-primary, .btn-secondary { 
+    width: 100%; 
+    box-sizing: border-box; 
   }
 }

@@ -49,15 +49,15 @@ function Statistics({ text = {} }) {
   const [usersCount, setUsersCount] = useState(12); // Výchozí hodnota (ta se nahradí reálnou)
   
   // Získání reálných čísel ze Supabase
-  useEffect(() => {
+useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { count: uCount, error } = await supabase
-          .from('profiles')
-          .select('*', { count: 'exact', head: true });
+        const { data: uCount, error } = await supabase.rpc('get_users_count');
           
         if (uCount !== null && !error) {
           setUsersCount(uCount);
+        } else if (error) {
+          console.error("Chyba při volání RPC funkce:", error);
         }
       } catch (err) {
         console.error("Chyba při načítání statistik:", err);

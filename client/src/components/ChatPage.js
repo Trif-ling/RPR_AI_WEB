@@ -63,6 +63,7 @@ const ChatPage = ({ text = {} }) => {
   const navigate = useNavigate(); // Pro přesměrování
   const [userName, setUserName] = useState(''); // Uchování uživatelského jména
   const [showProfilePopup, setShowProfilePopup] = useState(false); // Zda je popup otevřený
+  const [showLimits, setShowLimits] = useState(false); // Hlídá zobrazení info panelu o limitech
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [passwordMsg, setPasswordMsg] = useState(''); // Zpráva o úspěchu/chybě
@@ -73,6 +74,26 @@ const ChatPage = ({ text = {} }) => {
   const [selectedFile, setSelectedFile] = useState(null); // Samotný fyzický soubor
   const [previewUrl, setPreviewUrl] = useState(null); // Rychlý náhled pro uživatele
   const fileInputRef = useRef(null); // Odkaz na neviditelné tlačítko pro výběr souboru
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Hlídá mobilní menu
+  
+  const profileWrapperRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileWrapperRef.current && !profileWrapperRef.current.contains(event.target)) {
+        setShowProfilePopup(false); // Zavřeme hlavní popup
+        setShowLimits(false);       // Pro jistotu zavřeme i tabulku s limity
+      }
+    };
+
+    if (showProfilePopup) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showProfilePopup]);
 
   // --- STAVY CHATU ---
   const defaultWelcomeMsg = { id: 1, sender: 'bot', text: text?.chat_welcome || "Ahoj! Jak ti mohu pomoci?", createdAt: new Date() };
@@ -551,6 +572,7 @@ const prepareHistory = (currentMessages, currentModel) => {
   const handleNewChat = () => {
     setActiveChatId(null);
     setMessages([defaultWelcomeMsg]);
+    setIsSidebarOpen(false);
   };
 
   // --- FUNKCE PRO SMAZÁNÍ CHATU ---
@@ -627,9 +649,12 @@ const prepareHistory = (currentMessages, currentModel) => {
         <title>Chat s AI | JuNoMi</title>
       </Helmet>
 
+      {isSidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
+
       {/* === LEVÝ PANEL (SIDEBAR) === */}
-      <aside className="sidebar">
-        {/* Po kliknutí už nereloadujeme stránku, jen vyčistíme stav */}
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <button className="new-chat-btn" onClick={handleNewChat}>
           <span>+</span> Nový chat
         </button>
@@ -645,7 +670,10 @@ const prepareHistory = (currentMessages, currentModel) => {
               <div 
                 key={chat.id} 
                 className={`history-item ${activeChatId === chat.id ? 'active' : ''}`}
-                onClick={() => setActiveChatId(chat.id)}
+                onClick={() => {
+                  setActiveChatId(chat.id);
+                  setIsSidebarOpen(false);
+                }}
               >
                 {/* --- 1. NÁZEV NEBO INPUT PRO ÚPRAVU --- */}
                 {editingChatId === chat.id ? (
@@ -677,54 +705,106 @@ const prepareHistory = (currentMessages, currentModel) => {
         </div>
         
         <div className="sidebar-footer">
-          {/* VYSKAKOVACÍ OKNO (POPUP) */}
-          {showProfilePopup && user && (
-            <div className="user-popup">
-              <div className="user-popup-email">{user.email}</div>
-              
-              {isChangingPassword ? (
-                <div className="password-change-section">
-                  <input 
-                    type="password" 
-                    placeholder="Nové heslo" 
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="password-input-small"
-                  />
-                  {passwordMsg && <div style={{fontSize: '0.8rem', color: passwordMsg.includes('úspěšně') ? '#00d084' : '#ff4d4f', marginBottom: '8px'}}>{passwordMsg}</div>}
-                  <div style={{display: 'flex', gap: '8px', marginBottom: '10px'}}>
-                    <button className="btn-save-pwd" onClick={handleUpdatePassword}>Uložit</button>
-                    <button className="btn-cancel-pwd" onClick={() => {setIsChangingPassword(false); setPasswordMsg('');}}>Zrušit</button>
+          
+          <div ref={profileWrapperRef} style={{ position: 'relative', width: '100%' }}>
+
+            {/* === VYSKAKOVACÍ OKNO (POPUP) - Odemčeno pro všechny === */}
+            {showProfilePopup && (
+              <div className="user-popup">
+                
+                {/* === HLAVIČKA S EMAILEM/TITULEM A INFO IKONOU === */}
+                <div className="user-popup-header">
+                  {/* Změna: U hosta napíšeme "Váš Účet" místo emailu */}
+                  <div className="user-popup-email">
+                    {user ? user.email : 'Nastavení účtu'}
                   </div>
+                  <button 
+                    className={`info-limit-btn ${showLimits ? 'active' : ''}`} 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Pojistka, aby se nezavřel celý popup
+                      setShowLimits(!showLimits);
+                    }}
+                    title="Informace o limitech"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                  </button>
                 </div>
-              ) : (
-                <button className="change-pwd-btn" onClick={() => setIsChangingPassword(true)}>
-                  Změnit heslo
-                </button>
-              )}
 
-              <button className="logout-btn" onClick={handleLogout}>
-                Odhlásit se
-              </button>
-            </div>
-          )}
+                {/* === ROZBALOVACÍ PANEL S LIMITY (Obsah zůstává stejný) === */}
+                {showLimits && (
+                  <div className="limits-info-box">
+                    <h4>Vaše limity (na 30 min)</h4>
+                    <ul>
+                      <li><span>LLaMA 3.3:</span> <b>{user ? '40' : '20'} zpráv</b></li>
+                      <li><span>LLaMA 4 Scout:</span> <b>{user ? '15' : '5'} zpráv</b></li>
+                      <li><span>GPT OSS (Pro):</span> <b>{user ? '30' : '15'} zpráv</b></li>
+                      <li className="limit-img"><span>Obrázky (24h):</span> <b>{user ? '5' : '3'} ks</b></li>
+                    </ul>
+                    {!user && <p className="limit-tip">Tip: Přihlášením získáte až dvojnásobné limity!</p>}
+                  </div>
+                )}
 
-          {/* PROFIL UŽIVATELE (KLIKACÍ) */}
-          <div 
-            className="user-profile" 
-            onClick={() => user && setShowProfilePopup(!showProfilePopup)}
-            style={{ cursor: user ? 'pointer' : 'default' }}
-          >
-            <div className="avatar-small">
-              {user ? userName.substring(0, 2).toUpperCase() : 'G'}
+                {/* === AKČNÍ TLAČÍTKA (Heslo / Odhlášení vs Přihlášení) === */}
+                {user ? (
+                  <>
+                    {isChangingPassword ? (
+                      <div className="password-change-section">
+                        <input 
+                          type="password" 
+                          placeholder="Nové heslo" 
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="password-input-small"
+                        />
+                        {passwordMsg && <div style={{fontSize: '0.8rem', color: passwordMsg.includes('úspěšně') ? '#00d084' : '#ff4d4f', marginBottom: '8px'}}>{passwordMsg}</div>}
+                        <div style={{display: 'flex', gap: '8px', marginBottom: '10px'}}>
+                          <button className="btn-save-pwd" onClick={handleUpdatePassword}>Uložit</button>
+                          <button className="btn-cancel-pwd" onClick={() => {setIsChangingPassword(false); setPasswordMsg('');}}>Zrušit</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button className="change-pwd-btn" onClick={() => setIsChangingPassword(true)}>
+                        Změnit heslo
+                      </button>
+                    )}
+
+                    <button className="logout-btn" onClick={handleLogout}>
+                      Odhlásit se
+                    </button>
+                  </>
+                ) : (
+                  // TLAČÍTKO PRO HOSTA
+                  <button 
+                    className="login-btn-popup" 
+                    onClick={() => navigate('/login')}
+                    style={{ marginTop: '10px' }} // Drobný odstup
+                  >
+                    Přihlásit se
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* === PROFIL UŽIVATELE (TLAČÍTKO DOLU) - Povoleno pro všechny === */}
+            <div 
+              className="user-profile" 
+              onClick={() => setShowProfilePopup(!showProfilePopup)}
+              style={{ cursor: 'pointer' }} // Vždy kurzor ruky
+            >
+              <div className="avatar-small">
+                {user ? userName.substring(0, 2).toUpperCase() : 'HO'}
+              </div>
+              <div className="user-info">
+                <span className="user-name">{user ? userName : 'Host (Nepřihlášen)'}</span>
+                {!user && <span className="user-status">Bez historie</span>}
+              </div>
             </div>
-            <div className="user-info">
-              {/* Zobrazení jména místo e-mailu */}
-              <span className="user-name">{user ? userName : 'Host (Nepřihlášen)'}</span>
-              {/* 'Online' jsme odstranili, necháme jen text pro Hosta */}
-              {!user && <span className="user-status">Bez ukládání historie</span>}
-            </div>
-          </div>
+
+          </div> 
         </div>
       </aside>
 
@@ -733,6 +813,13 @@ const prepareHistory = (currentMessages, currentModel) => {
         <div className="chat-container">
           
           <div className="chat-header">
+            <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
             <div className="bot-avatar">JU</div>
             <div className="chat-info">
               <h3>Junomi asistent</h3>

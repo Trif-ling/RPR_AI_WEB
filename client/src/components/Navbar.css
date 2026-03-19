@@ -1,14 +1,8 @@
-/* src/components/Navbar.css */
-
 .navbar {
-  /* ZMĚNA: absolute místo fixed. 
-     Navbar bude nahoře, ale odroluje se s obsahem. 
-     To často řeší problémy s překrýváním fixní bubliny. */
   position: absolute; 
   top: 0; 
   left: 0; 
   width: 100%;
-  z-index: 5000; 
   
   display: flex;
   justify-content: space-between;
@@ -23,7 +17,7 @@
   transition: border-bottom-color 0.3s ease, background-color 0.4s ease;
 }
 
-/* === LOGO (Zachovány opravy velikosti a zoomu) === */
+/* === LOGO === */
 .navbar-logo {
   flex-shrink: 0;
   display: flex;
@@ -31,6 +25,7 @@
   height: 100%;
   text-decoration: none;
   margin-right: 20px;
+  z-index: 5002; 
 }
 
 .logo-container {
@@ -40,12 +35,12 @@
   height: 100%; 
   display: flex;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .logo-img {
   position: absolute;
   top: 50%;
-  left: 20%;
   transform: translateY(-50%);
   
   height: 60px; /* Na PC */
@@ -59,7 +54,7 @@
 .logo-img.visible { opacity: 1; z-index: 2; }
 .logo-img.hidden { opacity: 0; z-index: 1; }
 
-/* === OBAL PRO MENU (Nový) === */
+/* === OBAL PRO MENU === */
 .navbar-menu {
   display: flex;
   flex: 1;
@@ -98,8 +93,6 @@
   flex-shrink: 0; 
 }
 
-/* ... Zbytek stylů pro theme-switch, language-selector a login-btn necháme stejný jako jsi měl, jen sem přidáme Hamburger ... */
-
 .theme-switch { position: relative; display: block; width: 50px; height: 28px; flex-shrink: 0; }
 .theme-switch input { opacity: 0; width: 0; height: 0; }
 .switch-track { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #3a3a3a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 32px; transition: background-color 0.3s ease, border-color 0.3s; }
@@ -114,7 +107,6 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
   height: 100%; 
   background-color: transparent; 
   color: var(--text-color); 
-  /* TADY JE TEN RÁMEČEK 👇 */
   border: 2px solid var(--text-color); 
   padding: 0 20px 0 8px; 
   border-radius: 14px; 
@@ -143,7 +135,7 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
   border: none;
   background: transparent;
   padding: 0;
-  z-index: 5001; /* Aby bylo tlačítko vidět i když je menu přes celou obrazovku */
+  z-index: 5001; 
 }
 
 .hamburger .bar {
@@ -156,7 +148,6 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
   border-radius: 3px;
 }
 
-/* Animace do "X" při otevření */
 .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
 .hamburger.active .bar:nth-child(2) { opacity: 0; }
 .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -168,28 +159,30 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
 
 @media (max-width: 768px) {
   .hamburger {
-    display: block; /* Zobrazíme ikonu */
+    display: block; 
+    z-index: 10002;
   }
 
   .navbar-menu {
     position: fixed;
     top: 0;
-    right: -100%; /* Schované mimo obrazovku vpravo */
+    right: -100%; 
     width: 100vw;
     height: 100vh;
-    background-color: var(--bg-color); /* Plné pozadí, aby to překrylo web */
+    background-color: var(--bg-color); 
+    z-index: 10001;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 40px;
     transition: right 0.4s ease-in-out;
-    padding: 80px 20px 40px; /* Mezera nahoře pro hamburger ikonu */
+    padding: 80px 20px 40px; 
     box-sizing: border-box;
-    z-index: 5000;
   }
 
   .navbar-menu.open {
-    right: 0; /* Menu plynule vyjede ze strany */
+    right: 0; 
   }
 
   .navbar-links {
@@ -200,7 +193,7 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
   }
   
   .navbar-links a {
-    font-size: 1.5rem; /* Velké čitelné odkazy pro prst */
+    font-size: 1.5rem; 
   }
 
   .navbar-controls {

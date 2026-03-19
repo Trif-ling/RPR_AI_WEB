@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 import './Navbar.css';
 
 // Importy log
@@ -7,8 +8,22 @@ import logoWhite from '../logo-tmave.svg';
 import logoDark from '../logo-svetle.svg';
 
 function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentThemeState }) {
-  // Paměť pro stav otevření/zavření mobilního menu
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  
+  const location = useLocation();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleToggle = (e) => {
     e.preventDefault();
@@ -18,7 +33,6 @@ function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentTh
     toggleTheme(x, y);
   };
 
-  // Funkce pro zavření menu po kliknutí na odkaz
   const closeMenu = () => setIsOpen(false);
 
   return (
@@ -30,19 +44,17 @@ function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentTh
         </div>
       </Link>
       
-      {/* Tlačítko Hamburger Menu (viditelné jen na mobilech) */}
       <button className={`hamburger ${isOpen ? 'active' : ''}`} onClick={() => setIsOpen(!isOpen)}>
         <span className="bar"></span>
         <span className="bar"></span>
         <span className="bar"></span>
       </button>
 
-      {/* Tento kontejner drží odkazy a tlačítka - na PC je to řádek, na mobilu vyjížděcí menu */}
       <div className={`navbar-menu ${isOpen ? 'open' : ''}`}>
         <ul className="navbar-links">
           <li><a href="/#about" onClick={closeMenu}>{text?.nav_about || "About"}</a></li>
           <li><a href="/#statistics" onClick={closeMenu}>{text?.nav_stats || "Stats"}</a></li>
-          <li><Link to="/chat" onClick={closeMenu}>{text?.nav_chat || "Chat"}</Link></li>
+          <li><Link to="/privacy" onClick={closeMenu}>{text?.nav_privacy || "Privacy"}</Link></li>
         </ul>
 
         <div className="navbar-controls">
@@ -67,9 +79,20 @@ function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentTh
             <span className="arrow-down">▼</span>
           </div>
 
-          <Link to="/login" className="nav-login-btn" onClick={closeMenu}>
-            {text.nav_login}
-          </Link>
+          {user ? (
+            location.pathname !== '/chat' && (
+              <Link to="/chat" className="nav-login-btn" onClick={closeMenu}>
+                Přejít k JuNoMi
+              </Link>
+            )
+          ) : (
+            location.pathname !== '/login' && (
+              <Link to="/login" className="nav-login-btn" onClick={closeMenu}>
+                {text.nav_login}
+              </Link>
+            )
+          )}
+
         </div>
       </div>
     </nav>
