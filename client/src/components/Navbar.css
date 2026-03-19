@@ -30,7 +30,7 @@
   align-items: center;
   height: 100%;
   text-decoration: none;
-  margin-right: 20px;
+  margin-right: 60px;
 }
 
 .logo-container {
@@ -45,7 +45,7 @@
 .logo-img {
   position: absolute;
   top: 50%;
-  left: 20%;
+  left: 3%;
   transform: translateY(-50%);
   
   height: 60px; /* Na PC */

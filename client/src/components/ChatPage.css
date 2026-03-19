@@ -528,53 +528,23 @@
 }
 
 /* --- RESPONZIVITA PRO MOBILY --- */
-@media (max-width: 768px) {
-  /* Přepneme grid na jeden sloupec */
-  .app-layout { grid-template-columns: 1fr; }
+/* === RESPONZIVITA PRO MOBILY (NÁVRAT K PŮVODNÍMU STAVU) === */
+@media (max-width: 770px) {
+  /* Přepneme chat na celou obrazovku */
+  .app-layout { 
+    grid-template-columns: 1fr; 
+  }
+  
+  /* Historii na mobilu úplně schováme */
+  .sidebar { 
+    display: none !important; 
+  }
   
   .chat-container { max-width: 100%; }
   .message-row { max-width: 90%; }
   .input-area { padding: 10px 15px; }
 
-  /* Zobrazíme hamburger tlačítko */
-  .mobile-menu-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .chat-header {
-    padding: 10px 15px;
-  }
-
-  /* ZMĚNA: Sidebar už neskrýváme (display: none), ale přesuneme ho mimo obrazovku */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -100%; /* Schované vlevo */
-    height: 100vh;
-    width: 80%; /* Zabere 80% obrazovky mobilu */
-    max-width: 320px;
-    z-index: 6000; /* Nad chatem */
-    transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 2px 0 15px rgba(0,0,0,0.8);
-  }
-
-  /* Třída pro otevřené menu na mobilu */
-  .sidebar.mobile-open {
-    left: 0;
-  }
-
-  /* Tmavé pozadí za menu */
-  .sidebar-overlay {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(2px);
-    z-index: 5999;
-  }
+  /* Skryjeme tlačítko na vyjíždění i tmavé pozadí, co jsme přidali */
+  .mobile-menu-btn { display: none !important; }
+  .sidebar-overlay { display: none !important; }
 }
