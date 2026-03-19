@@ -11,6 +11,7 @@
   
   overflow: hidden; 
 }
+
 .sidebar {
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
@@ -133,6 +134,7 @@
   padding-top: 15px;
   margin-top: auto;
   flex-shrink: 0;
+  position: relative;
 }
 
 .user-profile {
@@ -141,6 +143,14 @@
   gap: 10px;
   color: var(--text-color);
   font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+  padding: 8px;
+  border-radius: 10px;
+  margin: -8px;
+}
+
+.user-profile:hover {
+  background-color: var(--box-bg);
 }
 
 .avatar-small {
@@ -180,10 +190,9 @@
   display: flex;
   flex-direction: column;
   background-color: var(--bg-color);
-  overflow: hidden; /* 👈 OPRAVA 3: Zabrání roztahování pravé půlky */
+  overflow: hidden;
 }
 
-/* Kontejner chatu */
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -192,10 +201,9 @@
   max-width: 1100px;
   margin: 0 auto;
   box-sizing: border-box;
-  overflow: hidden; /* 👈 OPRAVA 4: Jistota, že vnitřní obal neuteče */
+  overflow: hidden; 
 }
 
-/* Hlavička chatu */
 .chat-header {
   padding: 15px 20px;
   border-bottom: 1px solid var(--border-color);
@@ -227,16 +235,19 @@
   flex-direction: column;
   gap: 20px;
   scrollbar-width: thin;
-  min-height: 0; /* 👈 OPRAVA 5: MAGICKÝ TRIK, který zastaví Flexbox v roztahování stránky */
+  min-height: 0; 
 }
 
 .message-row {
   display: flex; align-items: flex-end; gap: 10px;
-  max-width: 75%; /* Zpráva nikdy nebude širší než 75% obrazovky */
+  max-width: 75%; 
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 2px;
 }
 
-.user-row { align-self: flex-end; flex-direction: row-reverse; }
-.bot-row { align-self: flex-start; }
+.user-row { align-self: flex-end; align-items: flex-end; }
+.bot-row { align-self: flex-start; align-items: flex-start; }
 
 .msg-avatar {
   width: 30px; height: 30px;
@@ -247,21 +258,18 @@
 }
 
 .message-bubble {
- padding: 10px 14px; 
-  border-radius: 16px; 
+  padding: 10px 14px; 
+  border-radius: 18px; 
   font-size: 0.95rem; 
   line-height: 1.5;
-  
-  
-  max-width: 65%; 
+  max-width: 80%; 
   width: fit-content; 
-  
   position: relative;
   word-wrap: break-word;      
   overflow-wrap: break-word;  
   word-break: break-word;      
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  margin-bottom: 2px; /* Aby na sebe zprávy hezky navazovaly */
+  margin-bottom: 0px; 
 }
 
 .bot-bubble {
@@ -269,22 +277,45 @@
   color: var(--text-color);
   border: 1px solid var(--border-color);
   border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
 }
 
 .user-bubble {
- background-color: var(--accent-color); 
+  background-color: var(--accent-color); 
   color: #000; 
   font-weight: 500;
-  /* "Ocas" bubliny směřující doprava */
   border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
-/* Mobil */
-@media (max-width: 768px) {
-  .app-layout { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
-  .chat-container { max-width: 100%; }
-  .message-row { max-width: 90%; }
+/* === ČASOVÁ ZNAČKA ZPRÁVY === */
+.message-time {
+  font-size: 0.7rem;
+  color: var(--text-color);
+  opacity: 0.5;
+  margin-top: -5px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.user-row .message-time { text-align: right; margin-right: 8px; }
+.bot-row .message-time { text-align: left; margin-left: 8px; }
+
+.date-separator {
+  text-align: center; 
+  margin: 30px 0 20px 0; 
+  width: 100%;
+  border-bottom: 1px solid var(--border-color); 
+  padding-bottom: 10px; 
+}
+
+.date-separator span {
+  color: var(--text-color);
+  opacity: 0.6; 
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Markdown styly */
@@ -303,67 +334,21 @@
   font-family: monospace; 
 }
 
-.input-area textarea::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-}
-
-.input-area textarea {
-  -ms-overflow-style: none !important;  /* Pro Internet Explorer a Edge */
-  scrollbar-width: none !important;     /* Pro Firefox */
-}
+.input-area textarea::-webkit-scrollbar { display: none !important; width: 0 !important; }
+.input-area textarea { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
 /* === CUSTOM SCROLLBAR POUZE PRO HLAVNÍ CHAT A BOČNÍ PANEL === */
-.messages-area::-webkit-scrollbar,
-.sidebar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+.messages-area::-webkit-scrollbar, .sidebar::-webkit-scrollbar { width: 6px; height: 6px; }
+.messages-area::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track { background: transparent; }
+.messages-area::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb { background-color: rgba(128, 128, 128, 0.3); border-radius: 10px; }
+.messages-area::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover { background-color: rgba(128, 128, 128, 0.6); }
 
-.messages-area::-webkit-scrollbar-track,
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.messages-area::-webkit-scrollbar-thumb,
-.sidebar::-webkit-scrollbar-thumb {
-  background-color: rgba(128, 128, 128, 0.3);
-  border-radius: 10px;
-}
-
-.messages-area::-webkit-scrollbar-thumb:hover,
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(128, 128, 128, 0.6);
-}
-
-/* Firefox podpora pro chat a sidebar */
-.messages-area,
-.sidebar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(128, 128, 128, 0.4) transparent;
-}
+.messages-area, .sidebar { scrollbar-width: thin; scrollbar-color: rgba(128, 128, 128, 0.4) transparent; }
 
 /* === POPUP PROFILU A ODHLÁŠENÍ === */
-
-.sidebar-footer {
-  position: relative; /* Nutné pro správné umístění popupu */
-}
-
-/* Jemný efekt při najetí na profil */
-.user-profile {
-  transition: background-color 0.2s ease;
-  padding: 8px;
-  border-radius: 10px;
-  margin: -8px; /* Kompenzace paddingu */
-}
-
-.user-profile:hover {
-  background-color: var(--box-bg);
-}
-
 .user-popup {
   position: absolute;
-  bottom: calc(100% + 15px); /* Umístí okno kousek nad profil */
+  bottom: calc(100% + 15px); 
   left: 0;
   width: 100%;
   background-color: #131313 !important;
@@ -373,8 +358,6 @@
   box-sizing: border-box;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   z-index: 100;
-  
-  /* Pěkná animace objevení */
   animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
@@ -413,121 +396,6 @@
   box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
 }
 
-/* === ÚPRAVA NÁZVU CHATU === */
-.history-title-input {
-  flex: 1;
-  background-color: var(--input-bg);
-  color: var(--text-color);
-  border: 1px solid var(--accent-color);
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-size: 0.9rem;
-  font-family: inherit;
-  outline: none;
-  margin-right: 5px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.history-title-input:focus {
-  box-shadow: 0 0 5px rgba(0, 208, 132, 0.3);
-}
-
-/* === POPUP PRO SMAZÁNÍ CHATU === */
-
-.delete-modal-overlay {
-  position: fixed;
-  top: 0; 
-  left: 0; 
-  right: 0; 
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6); /* Tmavé průhledné pozadí přes celou obrazovku */
-  backdrop-filter: blur(5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999; /* Musí být úplně nejvýš */
-  animation: fadeInOverlay 0.2s ease forwards;
-}
-
-.delete-modal-box {
-  background-color: var(--box-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 30px;
-  width: 90%;
-  max-width: 380px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-  text-align: center;
-  /* Animace poskočení jako u cookie banneru */
-  animation: popUpModal 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.delete-modal-box h4 {
-  margin: 0 0 15px 0;
-  color: var(--text-color);
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-
-.delete-modal-box p {
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: 0.95rem;
-  margin-bottom: 25px;
-  line-height: 1.5;
-}
-
-.delete-modal-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.btn-cancel-delete, .btn-confirm-delete {
-  flex: 1;
-  padding: 12px 0;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-cancel-delete {
-  background-color: transparent;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-}
-
-.btn-cancel-delete:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: var(--text-color);
-}
-
-.btn-confirm-delete {
-  background-color: #ff4d4f;
-  color: white;
-  border: none;
-}
-
-.btn-confirm-delete:hover {
-  background-color: #ff7875;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 77, 79, 0.3);
-}
-
-/* Animace */
-@keyframes fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes popUpModal {
-  from { opacity: 0; transform: translateY(30px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
 .change-pwd-btn {
   width: 100%; background: transparent; color: var(--text-color); border: 1px solid var(--border-color);
   padding: 8px; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 0.9rem;
@@ -538,177 +406,46 @@
   width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--accent-color);
   background: var(--input-bg); color: white; margin-bottom: 8px; box-sizing: border-box;
 }
-.btn-save-pwd, .btn-cancel-pwd {
-  flex: 1; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; border: none;
-}
+.btn-save-pwd, .btn-cancel-pwd { flex: 1; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; border: none; }
 .btn-save-pwd { background: var(--accent-color); color: black; font-weight: bold; }
 .btn-cancel-pwd { background: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
 
-.message-row {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 2px;
+/* === ÚPRAVA NÁZVU CHATU === */
+.history-title-input {
+  flex: 1; background-color: var(--input-bg); color: var(--text-color);
+  border: 1px solid var(--accent-color); border-radius: 4px; padding: 2px 6px;
+  font-size: 0.9rem; font-family: inherit; outline: none; margin-right: 5px;
+  width: 100%; box-sizing: border-box;
+}
+.history-title-input:focus { box-shadow: 0 0 5px rgba(0, 208, 132, 0.3); }
+
+/* === POPUP PRO SMAZÁNÍ CHATU === */
+.delete-modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 99999; animation: fadeInOverlay 0.2s ease forwards;
 }
 
-.message-bubble {
-  max-width: 80%;
-  width: auto;
-  margin-bottom: 0px;
-  border-radius: 18px;
+.delete-modal-box {
+  background-color: var(--box-bg); border: 1px solid var(--border-color);
+  border-radius: 20px; padding: 30px; width: 90%; max-width: 380px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); text-align: center;
+  animation: popUpModal 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.user-row {
-  align-items: flex-end;
-}
-.user-bubble {
-  border-top-right-radius: 4px;
-}
+.delete-modal-box h4 { margin: 0 0 15px 0; color: var(--text-color); font-size: 1.3rem; font-weight: 700; }
+.delete-modal-box p { color: var(--text-color); opacity: 0.8; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
+.delete-modal-actions { display: flex; gap: 12px; justify-content: center; }
 
-.bot-row {
-  align-items: flex-start;
-}
-.bot-bubble {
-  border-top-left-radius: 4px;
-}
+.btn-cancel-delete, .btn-confirm-delete { flex: 1; padding: 12px 0; border-radius: 10px; font-weight: bold; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; }
+.btn-cancel-delete { background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
+.btn-cancel-delete:hover { background-color: rgba(255, 255, 255, 0.05); border-color: var(--text-color); }
+.btn-confirm-delete { background-color: #ff4d4f; color: white; border: none; }
+.btn-confirm-delete:hover { background-color: #ff7875; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 77, 79, 0.3); }
 
-/* === ČASOVÁ ZNAČKA ZPRÁVY === */
-.message-time {
-  font-size: 0.7rem;
-  color: var(--text-color);
-  opacity: 0.5;
-  margin-top: -5px;
-  margin-bottom: 8px;
-  text-align: center;
-}
-
-.user-row .message-time {
-  text-align: right;
-  margin-right: 8px;
-}
-.bot-row .message-time {
-  text-align: left;
-  margin-left: 8px;
-}
-
-.date-separator {
-  text-align: center; /* Vystředí text (DNES, VČERA...) */
-  margin: 30px 0 20px 0; /* Vytvoří prostor nad a pod rozdělovačem */
-  width: 100%;
-  border-bottom: 1px solid var(--border-color); /* Vykreslí jemnou čáru přes celý chat */
-  padding-bottom: 10px; /* Udělá mezeru 10px mezi textem a čárou pod ním */
-}
-
-.date-separator span {
-  color: var(--text-color);
-  opacity: 0.6; /* Písmo bude poloprůhledné, aby nerušilo čtení zpráv */
-  font-size: 0.8rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Výběr modelu */
-.model-select-modern {
-  background: rgba(0, 0, 0, 0.2);
-  color: var(--text-color);
-  border: 1px solid transparent;
-  border-radius: 16px;
-  padding: 8px 8px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s ease;
-  appearance: none; /* Skryje výchozí hnusnou šipku */
-  max-width: 150px; /* Aby menu nebylo zbytečně dlouhé */
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.model-select-modern:hover {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: var(--accent-color, #00d084);
-}
-
-.model-select-modern option {
-  background: #1a1a1a;
-  color: white;
-}
-
-/* Tlačítko pro přílohu (Sponka) */
-.attach-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-color);
-  opacity: 0.6;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.attach-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
-.attach-btn:hover {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--accent-color, #00d084);
-}
-
-/* Náhled vybraného obrázku před odesláním */
-.image-preview-container {
-  position: relative;
-  display: inline-block;
-  margin: 10px 0 0 15px;
-  width: fit-content;
-}
-
-.image-preview-thumb {
-  max-height: 80px;
-  border-radius: 8px;
-  border: 2px solid var(--border-color);
-  object-fit: cover;
-}
-
-.remove-image-btn {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #ff4d4f;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-  font-size: 14px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-.remove-image-btn:hover {
-  background: #ff7875;
-}
-
-/* Aby se obrázky v chatu dobře zobrazovaly a nebyly přes celou obrazovku */
-.message-bubble img {
-  max-width: 100%;
-  max-height: 300px;
-  border-radius: 12px;
-  margin-top: 8px;
-  display: block;
-}
+@keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popUpModal { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
 /* === VYLEPŠENÝ INPUT PANEL === */
 .input-area {
@@ -721,77 +458,123 @@
 }
 
 .chat-input-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end; /* Všechno drží dole */
-  background-color: var(--input-bg, #2a2a2a);
-  border: 1px solid var(--border-color, #444);
-  border-radius: 24px; /* Hlavní zakulacení je teď tady */
-  padding: 8px 12px;
-  width: 100%;
-  min-height: 56px;
-  box-sizing: border-box;
+  display: flex; flex-direction: row; align-items: flex-end; 
+  background-color: var(--input-bg, #2a2a2a); border: 1px solid var(--border-color, #444);
+  border-radius: 24px; padding: 8px 12px; width: 100%; min-height: 56px; box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* Jemný glow efekt, když do pole uživatel klikne */
 .chat-input-wrapper:focus-within {
-  border-color: var(--accent-color, #00d084);
-  box-shadow: 0 0 0 1px rgba(0, 208, 132, 0.2);
+  border-color: var(--accent-color, #00d084); box-shadow: 0 0 0 1px rgba(0, 208, 132, 0.2);
 }
 
-.input-tools-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 4px; /* Aby levé menu ladilo s odesílací šipkou vpravo */
-}
-
-/* Prostřední prostor jen pro text a obrázek */
-.textarea-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  margin: 0 12px;
-}
+.input-tools-left { display: flex; align-items: center; gap: 8px; padding-bottom: 4px; }
+.textarea-container { flex: 1; display: flex; flex-direction: column; min-width: 0; margin: 0 12px; }
 
 .chat-textarea {
-  width: 100%;
-  background: transparent;
-  border: none;
-  color: var(--text-color, #fff);
-  font-size: 1rem;
-  font-family: inherit;
-  line-height: 1.5;
-  outline: none;
-  resize: none; 
-  min-height: 24px; /* Výška jednoho řádku */
-  max-height: 150px;
-  padding: 8px 0;
-  overflow-y: auto;
-  box-sizing: border-box;
+  width: 100%; background: transparent; border: none; color: var(--text-color, #fff);
+  font-size: 1rem; font-family: inherit; line-height: 1.5; outline: none; resize: none; 
+  min-height: 24px; max-height: 150px; padding: 8px 0; overflow-y: auto; box-sizing: border-box;
 }
 
-/* Odesílací tlačítko */
 .send-btn {
-  width: 40px; 
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background-color: var(--accent-color, #00d084);
-  color: #000;
-  cursor: pointer;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  flex-shrink: 0;
-  margin-bottom: 0px; 
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background-color: var(--accent-color, #00d084); color: #000; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-bottom: 0px; 
 }
-
 .send-btn svg { margin-left: 2px; }
 .send-btn:disabled { background-color: var(--box-bg); opacity: 0.5; cursor: not-allowed; }
 
-/* Skrytí ošklivých scrollbarů v textovém poli */
-.chat-textarea::-webkit-scrollbar { display: none !important; width: 0 !important; }
-.chat-textarea { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+.model-select-modern {
+  background: rgba(0, 0, 0, 0.2); color: var(--text-color); border: 1px solid transparent;
+  border-radius: 16px; padding: 8px 8px; font-size: 0.8rem; font-weight: 500; cursor: pointer; outline: none; transition: all 0.3s ease; appearance: none; max-width: 150px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+}
+.model-select-modern:hover { background: rgba(0, 0, 0, 0.4); border-color: var(--accent-color, #00d084); }
+.model-select-modern option { background: #1a1a1a; color: white; }
+
+.attach-btn { background: transparent; border: none; color: var(--text-color); opacity: 0.6; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 50%; transition: all 0.2s ease; }
+.attach-btn svg { width: 20px; height: 20px; }
+.attach-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.1); color: var(--accent-color, #00d084); }
+
+.image-preview-container { position: relative; display: inline-block; margin: 10px 0 0 15px; width: fit-content; }
+.image-preview-thumb { max-height: 80px; border-radius: 8px; border: 2px solid var(--border-color); object-fit: cover; }
+.remove-image-btn { position: absolute; top: -8px; right: -8px; background: #ff4d4f; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+.remove-image-btn:hover { background: #ff7875; }
+.message-bubble img { max-width: 100%; max-height: 300px; border-radius: 12px; margin-top: 8px; display: block; }
+
+
+/* =========================================================
+   NOVÉ: MOBILNÍ MENU PRO CHAT HISTORII A RESPONZIVITA
+   ========================================================= */
+
+/* Tlačítko hamburgeru v chatu - na PC skryté */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 5px;
+  margin-right: 15px;
+  transition: transform 0.2s;
+}
+
+.mobile-menu-btn:hover {
+  transform: scale(1.1);
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* --- RESPONZIVITA PRO MOBILY --- */
+@media (max-width: 768px) {
+  /* Přepneme grid na jeden sloupec */
+  .app-layout { grid-template-columns: 1fr; }
+  
+  .chat-container { max-width: 100%; }
+  .message-row { max-width: 90%; }
+  .input-area { padding: 10px 15px; }
+
+  /* Zobrazíme hamburger tlačítko */
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chat-header {
+    padding: 10px 15px;
+  }
+
+  /* ZMĚNA: Sidebar už neskrýváme (display: none), ale přesuneme ho mimo obrazovku */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%; /* Schované vlevo */
+    height: 100vh;
+    width: 80%; /* Zabere 80% obrazovky mobilu */
+    max-width: 320px;
+    z-index: 6000; /* Nad chatem */
+    transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 2px 0 15px rgba(0,0,0,0.8);
+  }
+
+  /* Třída pro otevřené menu na mobilu */
+  .sidebar.mobile-open {
+    left: 0;
+  }
+
+  /* Tmavé pozadí za menu */
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 5999;
+  }
+}

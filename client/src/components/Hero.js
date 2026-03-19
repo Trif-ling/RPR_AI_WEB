@@ -24,21 +24,22 @@ function Hero({ text }) {
 
       <div className="hero-3d-container">
         {/* ZŮSTANE JEN TENTO 3D MODEL, ŽÁDNÝ <img /> TAG VEDLE NĚJ! */}
-        <model-viewer
-          src="/models/samurai.glb" 
-          alt="3D Samurai Model"
-          auto-rotate
-          camera-controls
-          loading="eager"
-          shadow-intensity="2"
-          exposure="1.5"
-          environment-image="neutral"
-          auto-rotate-delay="0"
-          rotation-per-second="30deg"
-          interaction-prompt="none"
-          style={{ width: '100%', height: '100%', outline: 'none' }}
-        >
-        </model-viewer>
+      <model-viewer
+  src="/models/samurai.glb" 
+  alt="JuNoMi Samurai"
+  camera-controls
+  disable-zoom /* 👈 TOHLE JE TO KOUZLO, KTERÉ ZAKÁŽE PŘIBLIŽOVÁNÍ */
+  loading="eager"
+  shadow-intensity="2"
+  exposure="1.5"
+  environment-image="neutral"
+  interaction-prompt="none"
+  camera-orbit="0deg 75deg 105%"
+  min-camera-orbit="-30deg 60deg auto"
+  max-camera-orbit="30deg 90deg auto"
+  style={{ width: '100%', height: '100%', outline: 'none' }}
+>
+</model-viewer>
       </div>
     </section>
   );

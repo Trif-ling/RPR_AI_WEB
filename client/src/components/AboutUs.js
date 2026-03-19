@@ -35,7 +35,7 @@ function AboutUs({ text = {} }) {
           <div className="about-image-side">
             <div className="image-border-effect">
               <img 
-                src="https://placehold.co/600x400/1a1a1a/00ff7f?text=Nas+Tym" 
+                src="../foto.png" 
                 alt="JuNoMi Team" 
               />
             </div>

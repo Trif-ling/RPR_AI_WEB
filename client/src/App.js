@@ -105,23 +105,7 @@ function App() {
             <Routes>
               <Route path="/" element={
                 <>
-                  {/* OBRÁZEK SAMURAJE */}
-                  <img 
-                    src="/Samurai-removebg-preview.png" 
-                    alt="Samurai" 
-                    className="hero-samurai"
-                    style={{
-                      position: 'absolute',
-                      top: '80px',
-                      right: '0',
-                      width: '50vw',
-                      maxWidth: '800px',
-                      minWidth: '300px',
-                      zIndex: -1,          
-                      pointerEvents: 'none',
-                      opacity: 0.6         
-                           }}
-                  />
+                  
 
                   <Hero text={t} />
                   <AboutUs text={t} />

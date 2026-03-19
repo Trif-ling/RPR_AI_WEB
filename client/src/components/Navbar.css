@@ -59,6 +59,14 @@
 .logo-img.visible { opacity: 1; z-index: 2; }
 .logo-img.hidden { opacity: 0; z-index: 1; }
 
+/* === OBAL PRO MENU (Nový) === */
+.navbar-menu {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* === ODKAZY === */
 .navbar-links {
   display: flex;
@@ -90,152 +98,117 @@
   flex-shrink: 0; 
 }
 
-.theme-switch {
-  position: relative; display: block; width: 50px; height: 28px; flex-shrink: 0; 
-}
+/* ... Zbytek stylů pro theme-switch, language-selector a login-btn necháme stejný jako jsi měl, jen sem přidáme Hamburger ... */
+
+.theme-switch { position: relative; display: block; width: 50px; height: 28px; flex-shrink: 0; }
 .theme-switch input { opacity: 0; width: 0; height: 0; }
-
-.switch-track {
-  position: absolute; cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #3a3a3a; 
-  border: 1px solid rgba(255, 255, 255, 0.1); 
-  border-radius: 32px; 
-  transition: background-color 0.3s ease, border-color 0.3s;
-}
-
-.switch-knob {
-  position: absolute;
-  height: 22px; width: 22px;
-  left: 3px; bottom: 2px;  
-  background-color: white;
-  border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  display: flex; align-items: center; justify-content: center;
-}
-
+.switch-track { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #3a3a3a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 32px; transition: background-color 0.3s ease, border-color 0.3s; }
+.switch-knob { position: absolute; height: 22px; width: 22px; left: 3px; bottom: 2px; background-color: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; align-items: center; justify-content: center; }
 .icon-svg { width: 12px; height: 12px; color: #222; stroke-width: 2.5px; }
-
-input:checked + .switch-track {
-  background-color: #3a3a3a;
-  border-color: rgba(255, 255, 255, 0.1);
-}
+input:checked + .switch-track { background-color: #3a3a3a; border-color: rgba(255, 255, 255, 0.1); }
 input:checked + .switch-track .switch-knob { transform: translateX(22px); }
 
-.language-selector {
-  position: relative; display: block; width: 70px; height: 28px; flex-shrink: 0;
+.language-selector { position: relative; display: block; width: 70px; height: 28px; flex-shrink: 0; }
+.lang-select { 
+  width: 100%; 
+  height: 100%; 
+  background-color: transparent; 
+  color: var(--text-color); 
+  /* TADY JE TEN RÁMEČEK 👇 */
+  border: 2px solid var(--text-color); 
+  padding: 0 20px 0 8px; 
+  border-radius: 14px; 
+  cursor: pointer; 
+  font-weight: bold; 
+  outline: none; 
+  appearance: none; 
+  -webkit-appearance: none; 
+  font-size: 0.8rem; 
+  display: flex; 
+  align-items: center; 
+  transition: all 0.3s ease; 
+  opacity: 0.8; 
+}
+.lang-select option { background-color: var(--bg-color); color: var(--text-color); }
+.lang-select:hover { opacity: 1; background-color: var(--box-bg); }
+.arrow-down { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: var(--text-color); pointer-events: none; font-size: 0.6rem; }
+
+.nav-login-btn { display: inline-block; padding: 8px 24px; background-color: transparent; border: 2px solid var(--accent-color); border-radius: 30px; color: var(--text-color); font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: all 0.3s ease; }
+.nav-login-btn:hover { background-color: var(--accent-color); color: #000000; box-shadow: 0 0 15px rgba(0, 255, 127, 0.4); transform: translateY(-2px); }
+
+/* === HAMBURGER MENU IKONA (Na PC skrytá) === */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  z-index: 5001; /* Aby bylo tlačítko vidět i když je menu přes celou obrazovku */
 }
 
-.lang-select {
-  width: 100%; height: 100%;
-  background-color: transparent;
-  color: var(--text-color);
-  border: 1px solid var(--text-color);
-  padding: 0 20px 0 8px;
-  border-radius: 14px; cursor: pointer;
-  font-weight: bold; outline: none;
-  appearance: none; -webkit-appearance: none;
-  font-size: 0.8rem; display: flex; align-items: center;
-}
-.lang-select option { background-color: var(--nav-bg); color: var(--text-color); }
-
-.arrow-down {
-  position: absolute; right: 8px; top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-color); pointer-events: none;
-  font-size: 0.6rem;
+.hamburger .bar {
+  display: block;
+  width: 26px;
+  height: 3px;
+  margin: 5px auto;
+  background-color: var(--text-color);
+  transition: all 0.3s ease-in-out;
+  border-radius: 3px;
 }
 
-/* === RESPONZIVITA === */
+/* Animace do "X" při otevření */
+.hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.hamburger.active .bar:nth-child(2) { opacity: 0; }
+.hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* === RESPONZIVITA PRO MOBILY === */
 @media (max-width: 992px) {
-  .navbar-links {
-    gap: 15px; 
-  }
+  .navbar-links { gap: 15px; }
 }
 
 @media (max-width: 768px) {
-  .navbar {
-    position: absolute; /* I na mobilu absolute */
-    flex-wrap: wrap; 
-    height: auto;
-    padding: 15px 20px;
-    gap: 15px;
+  .hamburger {
+    display: block; /* Zobrazíme ikonu */
   }
-  
-  .navbar-logo {
-    flex: 1 1 auto;
-    margin-right: 0;
+
+  .navbar-menu {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Schované mimo obrazovku vpravo */
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-color); /* Plné pozadí, aby to překrylo web */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    transition: right 0.4s ease-in-out;
+    padding: 80px 20px 40px; /* Mezera nahoře pro hamburger ikonu */
+    box-sizing: border-box;
+    z-index: 5000;
   }
-  
-  .logo-img {
-    height: 45px; 
+
+  .navbar-menu.open {
+    right: 0; /* Menu plynule vyjede ze strany */
   }
 
   .navbar-links {
-    order: 3; 
+    flex-direction: column;
     width: 100%;
-    justify-content: space-between; 
-    padding-top: 10px;
-    border-top: 1px solid rgba(187, 28, 28, 0.1);
+    text-align: center;
+    gap: 30px;
   }
   
   .navbar-links a {
-    font-size: 0.9rem;
+    font-size: 1.5rem; /* Velké čitelné odkazy pro prst */
   }
 
   .navbar-controls {
-    flex: 0 0 auto;
-    order: 2;
+    flex-direction: column;
+    width: 100%;
+    gap: 25px;
   }
-}
-
-/* === OPRAVA VÝBĚRU JAZYKA (SELECT) === */
-
-/* Stylování samotného tlačítka */
-.navbar select {
-  background-color: transparent;       /* Průhledné pozadí tlačítka */
-  color: var(--text-color);            /* Barva textu podle režimu */
-  border: 2px solid var(--text-color); /* Rámeček podle textu */
-  border-radius: 20px;                 /* Kulaté rohy */
-  padding: 5px 10px;
-  cursor: pointer;
-  outline: none;
-  font-family: inherit;
-  opacity: 0.8;
-  transition: all 0.3s ease;
-}
-
-.navbar select:hover {
-  opacity: 1;
-  background-color: var(--box-bg);    /* Při najetí myší jemně podbarvit */
-}
-
-.navbar select option {
-  background-color: var(--bg-color);   /* Pozadí možností (Černá v noci, Bílá ve dne) */
-  color: var(--text-color);            /* Text možností */
-  padding: 10px;
-  border-radius: 2em;
-}
-
-/* === TLAČÍTKO PŘIHLÁSIT SE V NAVBARU === */
-.nav-login-btn {
-  display: inline-block;
-  padding: 8px 24px;
-  background-color: transparent;
-  border: 2px solid var(--accent-color); /* Tvůj zelený rámeček */
-  border-radius: 30px; /* Moderní tvar "pilulky" */
-  color: var(--text-color); /* Barva textu se přizpůsobí světlý/tmavý režim */
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: all 0.3s ease; /* Plynulá animace všech změn */
-}
-
-/* Efekt při najetí myší */
-.nav-login-btn:hover {
-  background-color: var(--accent-color); /* Vyplní se zeleně */
-  color: #000000; /* Text zčerná pro maximální čitelnost a kontrast */
-  box-shadow: 0 0 15px rgba(0, 255, 127, 0.4); /* Jemná neonová záře do okolí */
-  transform: translateY(-2px); /* Lehounce se nadzvedne */
+  
+  .language-selector { margin: 0 auto; }
+  .nav-login-btn { width: 100%; max-width: 250px; text-align: center; }
 }

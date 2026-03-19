@@ -112,3 +112,34 @@
     right: 0;
   }
 }
+
+
+
+/* === ANIMACE LEVITACE === */
+@keyframes floatHologram {
+  0% { transform: translateY(-40%); }
+  50% { transform: translateY(-44%); } /* Vyjede lehce nahoru */
+  100% { transform: translateY(-40%); }
+}
+
+.hero-3d-container {
+  position: absolute;
+  top: 50%;
+  /* 👇 TADY JSME HO POSUNULI VÍC DOPRAVA (původně bylo 2%, teď je nalepený na kraji, klidně dej i -5% pokud ho chceš ještě víc ven) */
+  right: -7%; 
+  transform: translateY(-40%);
+  width: 55vw;
+  height: 85vh;
+  max-width: 900px;
+  z-index: 1;
+  pointer-events: auto;
+  animation: floatHologram 6s ease-in-out infinite;
+}
+
+/* === SKRYTÍ SAMURAJE NA MENŠÍCH MONITORECH A MOBILECH === */
+/* 992px je ideální zlom – schová se, jakmile přejdeš z PC na tablet nebo mobil */
+@media (max-width: 992px) {
+  .hero-3d-container {
+    display: none !important;
+  }
+}
