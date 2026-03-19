@@ -14,7 +14,7 @@ export const translations = {
     hero_btn_login: "Přihlásit se",
     hero_btn_try: "Chat na zkoušku",
 
-    // ABOUT US
+   // ABOUT US
     about_title: "O NÁS",
     about_text: "Projekt JuNoMi vznikl z ambice vytvořit digitálního společníka, který boří bariéry mezi složitou technologií a běžným uživatelem. Nejsme jen další chatbot – jsme tým studentů, kteří věří, že umělá inteligence by měla být nejen mocná, ale především inspirativní a vizuálně přitažlivá.\n\nNaším cílem je vyvíjet nástroje, které pomáhají lidem tvořit, učit se a posouvat hranice jejich možností. Ladíme každý řádek kódu a každý pixel v rozhraní tak, aby práce s AI byla intuitivní, bezpečná a především efektivní. JuNoMi je výsledkem naší vášně pro inovace a snahy ukázat, že i studentský projekt může v uživatelském zážitku konkurovat těm nejlepším na světě.",
   
