@@ -53,7 +53,7 @@ const formatMessageTime = (dateObj) => {
   return dateObj.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
 };
 
-const BACKEND_URL = "http://localhost:3001";
+const BACKEND_URL = "https://monkfish-app-grkr8.ondigitalocean.app/rpr-ai-web-server";
 
 const ChatPage = ({ text = {} }) => {
   // --- STAVY UŽIVATELE A DATABÁZE ---
