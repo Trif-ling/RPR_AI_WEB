@@ -25,21 +25,33 @@ function LoginPage({ text = {}, theme }) {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
+
+    if (!captchaToken) {
+    setErrorMsg("Prosím, potvrď, že nejsi robot.");
+    return;
+  }
     setLoading(true);
     setResetMsg('');
     setErrorMsg(null);
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/update-password`,
-    });
+    options: {
+      captchaToken: captchaToken,
+    },
+    redirectTo: `${window.location.origin}/update-password`,
+  });
 
     if (error) {
       setErrorMsg(error.message);
-    } else {
+      setCaptchaToken(null);
+      captchaRef.current?.resetCaptcha();
+  } else {
       setResetMsg("Odkaz pro obnovu hesla byl odeslán na tvůj e-mail.");
-    }
-    setLoading(false);
-  };
+      setCaptchaToken(null);
+      captchaRef.current?.resetCaptcha();
+  }
+  setLoading(false);
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,7 +157,7 @@ function LoginPage({ text = {}, theme }) {
                   <input type="email" placeholder="tvuj@email.cz" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0 10px 0' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', margin: '15px 0' }}>
                 <HCaptcha
                   ref={captchaRef}
                   sitekey="9eac91e8-43c2-49d8-9a1e-51aa23aec7ec" 
