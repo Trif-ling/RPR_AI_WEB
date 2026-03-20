@@ -145,6 +145,15 @@ function LoginPage({ text = {}, theme }) {
                   <input type="email" placeholder="tvuj@email.cz" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
               </div>
+              <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0 10px 0' }}>
+                <HCaptcha
+                  ref={captchaRef}
+                  sitekey="9eac91e8-43c2-49d8-9a1e-51aa23aec7ec" 
+                  theme={theme}
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onExpire={() => setCaptchaToken(null)}
+                />
+              </div>
               <button type="submit" className="submit-btn-glow" disabled={loading}>
                 {loading ? "Odesílám..." : "Poslat odkaz na e-mail"}
               </button>
