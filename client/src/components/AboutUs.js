@@ -21,7 +21,7 @@ function AboutUs({ text = {} }) {
               </div>
               <div className="team-card-modern">
                 <div className="card-dot"></div>
-                <h3>Ondřej Juhás</h3>
+                <h3>Ondřej Juhas</h3>
                 <p>Backend Developer</p>
               </div>
               <div className="team-card-modern">
