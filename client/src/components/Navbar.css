@@ -1,10 +1,5 @@
 .navbar {
-  position: absolute; 
-  top: 0; 
-  left: 0; 
-  width: 100%;
   
-  display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 5%;
@@ -15,7 +10,18 @@
   box-sizing: border-box;
   
   transition: border-bottom-color 0.3s ease, background-color 0.4s ease;
+
+  
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%;
+  z-index: 99999 !important; 
+  pointer-events: auto; 
+  
+  display: flex;
 }
+
 
 /* === LOGO === */
 .navbar-logo {
