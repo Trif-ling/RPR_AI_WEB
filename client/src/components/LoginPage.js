@@ -34,11 +34,9 @@ function LoginPage({ text = {}, theme }) {
     setResetMsg('');
     setErrorMsg(null);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    options: {
-      captchaToken: captchaToken,
-    },
-    redirectTo: `${window.location.origin}/update-password`,
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      captchaToken: captchaToken, // Tady už nesmí být to "options: {}" !
+      redirectTo: `${window.location.origin}/update-password`,
   });
 
     if (error) {

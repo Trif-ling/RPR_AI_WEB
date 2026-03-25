@@ -172,3 +172,19 @@
     text-align: center;
   }
 }
+
+.brand-contact {
+  margin-top: 15px;
+}
+
+.contact-email {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.3s ease;
+}
+
+.contact-email:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}

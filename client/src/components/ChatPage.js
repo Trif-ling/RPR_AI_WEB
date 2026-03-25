@@ -128,7 +128,7 @@ const ChatPage = ({ text = {} }) => {
       }
     };
     fetchUser();
-  }, []); // Přidáno inputValue jako závislost pro aktualizaci jména po změně
+  }, []); 
 
   const handleUpdatePassword = async () => {
     if (newPassword.length < 6) {
@@ -281,7 +281,22 @@ const prepareHistory = (currentMessages, currentModel) => {
     return <div dangerouslySetInnerHTML={{ __html: cleanHtml }} className="markdown-content" />;
   };
 
-  // --- FUNKCE PRO PRÁCI S OBRÁZKY ---
+  // --- FUNKCE PRO PRÁCI S OBRÁZKY A KONTROLU HOSTŮ ---
+  const handleAttachClick = (e) => {
+    e.preventDefault();
+    
+    // Pokud uživatel není přihlášen, zablokujeme akci a ukážeme zprávu
+    if (!user) {
+      alert("Nahrávat obrázky mohou pouze přihlášení uživatelé. Prosím, přihlaste se nebo se zaregistrujte.");
+      return;
+    }
+
+    // Pokud je přihlášen, spustíme standardní výběr souboru
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -714,7 +729,6 @@ const prepareHistory = (currentMessages, currentModel) => {
                 
                 {/* === HLAVIČKA S EMAILEM/TITULEM A INFO IKONOU === */}
                 <div className="user-popup-header">
-                  {/* Změna: U hosta napíšeme "Váš Účet" místo emailu */}
                   <div className="user-popup-email">
                     {user ? user.email : 'Nastavení účtu'}
                   </div>
@@ -742,7 +756,10 @@ const prepareHistory = (currentMessages, currentModel) => {
                       <li><span>LLaMA 3.3:</span> <b>{user ? '40' : '20'} zpráv</b></li>
                       <li><span>LLaMA 4 Scout:</span> <b>{user ? '15' : '5'} zpráv</b></li>
                       <li><span>GPT OSS (Pro):</span> <b>{user ? '30' : '15'} zpráv</b></li>
-                      <li className="limit-img"><span>Obrázky (24h):</span> <b>{user ? '5' : '3'} ks</b></li>
+                      <li className="limit-img">
+                        <span>Obrázky (24h):</span> 
+                        <b>{user ? '5 ks' : <span style={{fontSize: '0.8em', color: '#ff4d4f'}}>Jen přihlášení</span>}</b>
+                      </li>
                     </ul>
                     {!user && <p className="limit-tip">Tip: Přihlášením získáte až dvojnásobné limity!</p>}
                   </div>
@@ -903,7 +920,7 @@ const prepareHistory = (currentMessages, currentModel) => {
                     type="button" 
                     className="attach-btn" 
                     title="Připojit obrázek"
-                    onClick={() => fileInputRef.current.click()}
+                    onClick={handleAttachClick} 
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>

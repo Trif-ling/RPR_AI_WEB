@@ -1,17 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
- import './Footer.css'; 
+import './Footer.css'; 
 
-// ⚠️ Opět přidat { text }
 function Footer({ text = {} }) {
   return (
     <footer className="footer-section">
       <div className="footer-content">
         
-        {/* Levý sloupec s logem a popisem */}
+        {/* Levý sloupec s logem, popisem a kontaktem */}
         <div className="footer-brand">
           <h2>JuNoMi</h2>
           <p>{text.footer_desc}</p>
+          
+          <div className="brand-contact">
+            <a href="mailto:juhaso.07@spst.eu" className="contact-email">
+              juhaso.07@spst.eu
+            </a>
+          </div>
         </div>
 
         {/* Prostřední sloupec: Rychlé odkazy */}
