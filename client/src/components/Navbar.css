@@ -207,6 +207,10 @@ input:checked + .switch-track .switch-knob { transform: translateX(22px); }
     width: 100%;
     gap: 25px;
   }
+
+  .navbar.hide-on-mobile {
+    display: none !important;
+  }
   
   .language-selector { margin: 0 auto; }
   .nav-login-btn { width: 100%; max-width: 250px; text-align: center; }

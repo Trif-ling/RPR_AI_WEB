@@ -640,12 +640,20 @@
   .app-layout { 
     grid-template-columns: 1fr; 
     z-index: 9999;
+    height: 100dvh !important; 
+    bottom: 0 !important;
   }
   
   .chat-container { max-width: 100%; }
   .message-row { max-width: 90%; }
   .input-area { padding: 10px 15px; }
   .chat-header { padding: 10px 15px; }
+
+  .input-area { 
+    padding: 10px 15px 20px 15px !important;
+    /* na iPhonech s "proužkem" se to zvedne ještě o kousek víc */
+    padding-bottom: calc(15px + env(safe-area-inset-bottom)) !important;
+  }
 
   /* Zobrazíme hamburger tlačítko */
   .mobile-menu-btn {

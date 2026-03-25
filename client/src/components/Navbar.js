@@ -12,6 +12,8 @@ function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentTh
   const [user, setUser] = useState(null);
   
   const location = useLocation();
+  
+  const isChatPage = location.pathname === '/chat';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -36,7 +38,7 @@ function Navbar({ isToggled, toggleTheme, language, setLanguage, text, currentTh
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isChatPage ? 'hide-on-mobile' : ''}`}>
       <Link to="/" className="navbar-logo" onClick={closeMenu}>
         <div className="logo-container">
           <img src={logoWhite} alt="Junomi" className={`logo-img ${currentThemeState === 'dark' ? 'visible' : 'hidden'}`} />
